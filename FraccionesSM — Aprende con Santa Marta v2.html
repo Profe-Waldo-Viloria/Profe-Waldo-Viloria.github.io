@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FraccionesSM — Aprende con Santa Marta</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root {
+  --navy:#0a1f3d; --navy2:#112d52; --navy3:#1a3d6e;
+  --gold:#f5a623; --gold2:#fbbf24; --gold3:#fef3c7;
+  --teal:#0d9488; --teal2:#ccfbf1;
+  --coral:#e85d3a; --coral2:#fef2ee;
+  --sky:#e0f2fe; --skydk:#0284c7;
+  --green:#15803d; --green2:#dcfce7;
+  --white:#fff; --offwhite:#f8fafc;
+  --gray:#64748b; --gray2:#f1f5f9; --gray3:#e2e8f0; --gray4:#334155;
+  --text:#0f172a; --text2:#475569;
+  --r:14px; --r2:22px;
+  --sh:0 4px 32px rgba(10,31,61,.10);
+  --sh2:0 8px 48px rgba(10,31,61,.18);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--offwhite);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* =========== FRACTION DISPLAY =========== */
+.frac{display:inline-flex;flex-direction:column;align-items:center;line-height:1;vertical-align:middle;margin:0 6px}
+.frac .fn{border-bottom:3px solid currentColor;padding:2px 6px;font-weight:800;font-size:1.1em}
+.frac .fd{padding:2px 6px;font-weight:800;font-size:1.1em}
+.frac-sm .fn,.frac-sm .fd{font-size:.85em;padding:1px 4px}
+.frac-sm{margin:0 3px}
+
+.math-row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.math-op{font-size:1.5rem;font-weight:700;color:var(--navy);display:flex;align-items:center;line-height:1}
+.math-eq{font-size:1.5rem;font-weight:700;color:var(--navy);display:flex;align-items:center;line-height:1}
+.math-result{color:var(--teal)}
+.math-note{font-size:.85rem;color:var(--gray);display:flex;align-items:center;font-style:italic}
+
+.math-box{background:linear-gradient(135deg,#f8fafc,#e0f2fe);border:1.5px solid var(--gray3);border-radius:var(--r);padding:20px 28px;margin:16px 0;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px;font-size:1.4rem;color:var(--navy)}
+
+/* =========== NAVBAR =========== */
+nav{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px 24px rgba(0,0,0,.30)}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;padding:0 24px;gap:0}
+.nav-logo{display:flex;align-items:center;gap:12px;padding:13px 0;cursor:pointer;flex-shrink:0;text-decoration:none}
+.nav-logo-icon{width:44px;height:44px;background:var(--gold);border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--navy);flex-shrink:0;box-shadow:0 2px 10px rgba(245,166,35,.4)}
+.nav-title{font-family:'Fraunces',serif;font-size:19px;font-weight:900;color:#fff;line-height:1}
+.nav-sub{font-size:10.5px;color:rgba(255,255,255,.5);letter-spacing:.06em;margin-top:2px}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1;padding:0 28px}
+.nav-link{display:flex;align-items:center;gap:6px;padding:8px 13px;border-radius:9px;font-size:13px;font-weight:600;color:rgba(255,255,255,.65);cursor:pointer;border:none;background:none;transition:all .17s;white-space:nowrap}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,.09)}
+.nav-link.active{color:var(--gold);background:rgba(245,166,35,.13)}
+.nav-badge{font-size:10px;background:var(--gold);color:var(--navy);padding:2px 7px;border-radius:20px;font-weight:800}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.nav-author{display:flex;align-items:center;gap:9px;padding:7px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:40px;cursor:pointer}
+.nav-author-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--coral));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--navy);flex-shrink:0}
+.nav-author-name{font-size:11.5px;font-weight:600;color:rgba(255,255,255,.85);line-height:1.2}
+.nav-author-role{font-size:10px;color:rgba(255,255,255,.45)}
+
+/* =========== SCREENS =========== */
+.screen{display:none}
+.screen.active{display:block}
+
+/* =========== SANTA MARTA SVG ILLUSTRATIONS =========== */
+.sm-illustration{width:100%;max-width:900px;margin:0 auto;display:block}
+
+/* =========== HERO =========== */
+.hero{background:linear-gradient(150deg,var(--navy) 0%,var(--navy2) 50%,#0d3060 100%);padding:0;position:relative;overflow:hidden}
+.hero-bg-pattern{position:absolute;inset:0;opacity:.06;background-image:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%);background-size:20px 20px}
+.hero-waves{position:absolute;bottom:0;left:0;right:0}
+.hero-content{max-width:1200px;margin:0 auto;padding:56px 32px 0;display:grid;grid-template-columns:1fr 480px;gap:40px;align-items:end;position:relative}
+.hero-text{}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.35);border-radius:40px;padding:6px 16px;font-size:12.5px;font-weight:700;color:var(--gold);margin-bottom:20px;letter-spacing:.04em;text-transform:uppercase}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(34px,5vw,60px);font-weight:900;line-height:1.1;color:#fff;margin-bottom:18px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p{font-size:16.5px;color:rgba(255,255,255,.70);line-height:1.75;max-width:500px;margin-bottom:32px}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px}
+.btn-gold{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--navy);font-weight:800;font-size:14.5px;padding:13px 26px;border-radius:11px;border:none;cursor:pointer;transition:all .18s;box-shadow:0 4px 20px rgba(245,166,35,.40)}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(245,166,35,.50)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.09);color:#fff;font-weight:700;font-size:14.5px;padding:13px 26px;border-radius:11px;border:1.5px solid rgba(255,255,255,.18);cursor:pointer;transition:all .18s}
+.btn-ghost:hover{background:rgba(255,255,255,.16)}
+.hero-cityscape{width:100%;display:block;align-self:end}
+
+/* =========== STATS BAR =========== */
+.stats-bar{background:#fff;border-bottom:1.5px solid var(--gray3)}
+.stats-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.stat-item{padding:20px 28px;border-right:1.5px solid var(--gray3);display:flex;align-items:center;gap:14px}
+.stat-item:last-child{border-right:none}
+.stat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.stat-num{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--navy);line-height:1}
+.stat-lbl{font-size:12px;color:var(--text2);margin-top:3px;font-weight:500}
+
+/* =========== SECTION =========== */
+.section{max-width:1200px;margin:0 auto;padding:56px 32px}
+.section-tag{display:inline-block;background:rgba(245,166,35,.12);color:#a06000;font-size:11.5px;font-weight:800;letter-spacing:.08em;padding:5px 14px;border-radius:20px;text-transform:uppercase;margin-bottom:12px}
+.section-head h2{font-family:'Fraunces',serif;font-size:34px;font-weight:900;color:var(--navy);line-height:1.2}
+.section-head p{color:var(--text2);font-size:15.5px;margin-top:10px;line-height:1.7;max-width:620px}
+
+/* =========== TOPIC CARDS =========== */
+.topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px;margin-top:32px}
+.topic-card{background:#fff;border-radius:var(--r2);border:2px solid var(--gray3);padding:0;cursor:pointer;transition:all .22s;overflow:hidden;position:relative}
+.topic-card:hover{border-color:var(--navy);box-shadow:var(--sh2);transform:translateY(-3px)}
+.topic-card-top{height:90px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.topic-card-body{padding:18px 20px 20px}
+.topic-num-big{position:absolute;right:10px;top:6px;font-family:'Fraunces',serif;font-size:52px;font-weight:900;opacity:.18;color:#fff;line-height:1}
+.topic-emoji{font-size:34px;position:relative;z-index:1}
+.topic-card h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.topic-card p{font-size:12.5px;color:var(--text2);line-height:1.55}
+.topic-level{display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;margin-top:12px}
+
+/* =========== LESSON LAYOUT =========== */
+.lesson-layout{max-width:1200px;margin:0 auto;padding:40px 32px;display:grid;grid-template-columns:260px 1fr;gap:32px;align-items:start}
+.lesson-sidebar{position:sticky;top:76px;background:#fff;border-radius:var(--r2);border:1.5px solid var(--gray3);overflow:hidden;box-shadow:var(--sh)}
+.sidebar-header{background:linear-gradient(135deg,var(--navy),var(--navy3));padding:20px;color:#fff}
+.sidebar-header h3{font-family:'Fraunces',serif;font-size:16px;font-weight:700}
+.sidebar-header p{font-size:11px;color:rgba(255,255,255,.55);margin-top:3px}
+.sidebar-link{display:flex;align-items:center;gap:10px;padding:12px 18px;cursor:pointer;font-size:13.5px;color:var(--text2);border-bottom:1px solid var(--gray3);transition:all .15s;font-weight:500}
+.sidebar-link:hover{background:var(--sky);color:var(--navy)}
+.sidebar-link.active{background:var(--sky);color:var(--navy);font-weight:700;border-left:3px solid var(--navy)}
+.sidebar-link i{font-size:16px;flex-shrink:0}
+.sidebar-profe{padding:16px;border-top:1.5px solid var(--gray3);display:flex;gap:10px;align-items:center}
+.profe-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--coral));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:var(--navy);flex-shrink:0}
+.profe-name{font-size:12px;font-weight:700;color:var(--navy);line-height:1.3}
+.profe-role{font-size:10.5px;color:var(--text2);margin-top:1px}
+
+/* =========== LESSON HEADER =========== */
+.lesson-header{border-radius:var(--r2);padding:36px 40px;margin-bottom:24px;color:#fff;position:relative;overflow:hidden}
+.lesson-header .lh-bg{position:absolute;inset:0;z-index:0}
+.lesson-header .lh-content{position:relative;z-index:1}
+.lesson-header .level-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:20px;margin-bottom:14px}
+.lesson-header h1{font-family:'Fraunces',serif;font-size:clamp(22px,3vw,32px);font-weight:900;line-height:1.2}
+.lesson-header p{color:rgba(255,255,255,.72);font-size:15px;margin-top:10px;line-height:1.7;max-width:560px}
+.lh-deco{position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:90px;opacity:.15;z-index:0}
+
+/* =========== CONTENT BLOCKS =========== */
+.content-block{background:#fff;border-radius:var(--r2);border:1.5px solid var(--gray3);margin-bottom:20px;overflow:hidden;box-shadow:0 2px 12px rgba(10,31,61,.05)}
+.block-head{display:flex;align-items:center;gap:13px;padding:18px 24px;border-bottom:1.5px solid var(--gray3)}
+.block-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.block-head h2{font-family:'Fraunces',serif;font-size:19px;font-weight:800;color:var(--navy)}
+.block-body{padding:26px 28px}
+.block-body p{font-size:15px;line-height:1.80;color:var(--text);margin-bottom:14px}
+.block-body p:last-child{margin-bottom:0}
+
+/* Context box */
+.ctx-box{background:linear-gradient(135deg,#e0f2fe,#f0f9ff);border-radius:var(--r);padding:18px 22px;margin:18px 0;border-left:4px solid var(--skydk);display:flex;gap:14px;align-items:flex-start}
+.ctx-box-teal{background:linear-gradient(135deg,var(--teal2),#f0fdf4);border-left-color:var(--teal)}
+.ctx-box-gold{background:linear-gradient(135deg,var(--gold3),#fffbeb);border-left-color:var(--gold)}
+.ctx-icon{font-size:28px;flex-shrink:0;line-height:1}
+.ctx-box p{font-size:14.5px;line-height:1.70;color:var(--navy);margin:0;font-weight:500}
+.ctx-box strong{color:var(--navy3)}
+
+/* Steps */
+.steps-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin:16px 0}
+.step-item{display:flex;gap:16px;align-items:flex-start;background:var(--gray2);border-radius:var(--r);padding:16px 18px;border:1px solid var(--gray3)}
+.step-num{min-width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;box-shadow:0 3px 10px rgba(10,31,61,.25)}
+.step-content h4{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.step-content p{font-size:13.5px;color:var(--text2);line-height:1.60;margin:0}
+
+/* Example cards */
+.example-card{border:2px solid var(--gray3);border-radius:var(--r);margin:14px 0;overflow:hidden}
+.example-head{display:flex;align-items:center;justify-content:space-between;background:var(--navy);padding:13px 20px;color:#fff;font-size:13.5px;font-weight:700}
+.diff-badge{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:800}
+.diff-easy{background:rgba(5,150,105,.25);color:#6ee7b7}
+.diff-med{background:rgba(245,166,35,.25);color:var(--gold2)}
+.diff-hard{background:rgba(220,38,38,.25);color:#fca5a5}
+.example-body{padding:20px}
+.problem{font-weight:700;color:var(--navy);font-size:15px;margin-bottom:14px;line-height:1.6}
+.sol-step{display:flex;align-items:baseline;gap:10px;font-size:14px;margin-bottom:8px;line-height:1.6}
+.sol-arrow{color:var(--gold);font-weight:800;font-size:15px;flex-shrink:0}
+
+/* Alert boxes */
+.alert-box{border-radius:var(--r);padding:18px 22px;margin:16px 0;display:flex;gap:14px;align-items:flex-start}
+.alert-danger{background:#fef2f2;border:1.5px solid #fecaca}
+.alert-success{background:#f0fdf4;border:1.5px solid #bbf7d0}
+.alert-warning{background:#fffbeb;border:1.5px solid #fde68a}
+.alert-info{background:#eff6ff;border:1.5px solid #bfdbfe}
+.alert-box i{font-size:22px;flex-shrink:0;margin-top:1px}
+.alert-danger i{color:#dc2626}
+.alert-success i{color:#059669}
+.alert-warning i{color:#d97706}
+.alert-info i{color:var(--skydk)}
+.alert-box h4{font-size:14px;font-weight:800;margin-bottom:5px}
+.alert-box p{font-size:13.5px;line-height:1.60;margin:0;color:var(--text2)}
+
+/* =========== EXERCISES =========== */
+.ex-tabs{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+.ex-tab{padding:9px 20px;border-radius:10px;font-size:13.5px;font-weight:700;cursor:pointer;border:2px solid var(--gray3);background:#fff;color:var(--text2);transition:all .15s}
+.ex-tab:hover{border-color:var(--navy);color:var(--navy)}
+.ex-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.ex-set{display:none}
+.ex-set.active{display:block}
+.exercise-item{background:#fff;border-radius:var(--r);border:2px solid var(--gray3);padding:20px 22px;margin-bottom:14px;transition:border-color .2s}
+.ex-q{font-size:15.5px;font-weight:800;color:var(--navy);margin-bottom:8px}
+.ex-context{font-size:13.5px;color:var(--text2);margin-bottom:14px;font-style:italic;line-height:1.65;background:var(--gray2);padding:10px 14px;border-radius:9px}
+.ex-input-wrap{display:flex;gap:10px;align-items:center}
+.ex-input-wrap input{flex:1;padding:11px 16px;border-radius:10px;border:2px solid var(--gray3);font-size:15px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border-color .15s;background:#fff}
+.ex-input-wrap input:focus{border-color:var(--navy)}
+.check-btn{padding:11px 20px;border-radius:10px;background:var(--navy);color:#fff;font-weight:800;font-size:13.5px;border:none;cursor:pointer;transition:all .15s;white-space:nowrap}
+.check-btn:hover{background:var(--navy3)}
+.ex-feedback{font-size:13px;margin-top:9px;display:none;padding:9px 14px;border-radius:9px;font-weight:600}
+.ex-feedback.correct{display:block;background:#f0fdf4;color:#065f46;border:1px solid #bbf7d0}
+.ex-feedback.wrong{display:block;background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.prog-summary{background:#fff;border-radius:var(--r);border:1.5px solid var(--gray3);padding:20px 26px;margin-bottom:24px;display:flex;align-items:center;gap:20px;box-shadow:var(--sh)}
+.prog-text{font-size:13px;color:var(--text2);font-weight:500}
+.prog-score{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:var(--navy);line-height:1}
+
+/* =========== GLOSARIO =========== */
+.search-box{position:relative;margin-bottom:26px}
+.search-box input{width:100%;padding:15px 20px 15px 52px;border-radius:var(--r);border:2px solid var(--gray3);font-size:15px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border-color .15s;background:#fff}
+.search-box input:focus{border-color:var(--navy)}
+.search-icon{position:absolute;left:17px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--gray)}
+.glosario-grid{display:flex;flex-direction:column;gap:12px}
+.glosario-item{background:#fff;border-radius:var(--r);border:1.5px solid var(--gray3);padding:20px 24px;transition:all .15s}
+.glosario-item:hover{border-color:var(--navy);box-shadow:var(--sh)}
+.glosario-term{font-family:'Fraunces',serif;font-size:19px;font-weight:800;color:var(--navy);margin-bottom:7px}
+.glosario-def{font-size:14.5px;color:var(--text2);line-height:1.70}
+.glosario-ex{margin-top:10px;padding:10px 15px;background:var(--sky);border-radius:9px;font-size:13.5px;color:var(--navy3);line-height:1.60;font-weight:500}
+
+/* =========== QUIZ =========== */
+.quiz-wrap{max-width:740px;margin:0 auto}
+.quiz-card{background:#fff;border-radius:var(--r2);border:1.5px solid var(--gray3);padding:40px;box-shadow:var(--sh2)}
+.quiz-prog-bar{height:7px;background:var(--gray3);border-radius:20px;overflow:hidden;margin-top:8px;margin-bottom:28px}
+.quiz-prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--skydk));border-radius:20px;transition:width .4s}
+.quiz-prog-text{font-size:13px;color:var(--text2);font-weight:600}
+.quiz-q{font-family:'Fraunces',serif;font-size:23px;color:var(--navy);margin-bottom:10px;line-height:1.35;font-weight:800}
+.quiz-ctx{font-size:14px;color:var(--text2);margin-bottom:28px;font-style:italic;line-height:1.65;background:var(--gray2);padding:12px 16px;border-radius:10px}
+.quiz-opts{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
+.quiz-opt{padding:16px 20px;border-radius:var(--r);border:2px solid var(--gray3);cursor:pointer;font-size:15px;display:flex;align-items:center;gap:13px;transition:all .15s;background:#fff;font-weight:500}
+.quiz-opt:hover{border-color:var(--navy);background:var(--sky)}
+.quiz-opt.selected{border-color:var(--navy);background:var(--sky)}
+.quiz-opt.correct{border-color:#059669;background:#f0fdf4;color:#065f46;font-weight:700}
+.quiz-opt.wrong{border-color:#dc2626;background:#fef2f2;color:#991b1b}
+.qletter{min-width:34px;height:34px;border-radius:50%;border:2px solid var(--gray3);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;transition:all .15s}
+.quiz-opt.selected .qletter{background:var(--navy);color:#fff;border-color:var(--navy)}
+.quiz-opt.correct .qletter{background:#059669;color:#fff;border-color:#059669}
+.quiz-opt.wrong .qletter{background:#dc2626;color:#fff;border-color:#dc2626}
+.quiz-exp{background:linear-gradient(135deg,var(--sky),var(--teal2));border-radius:var(--r);padding:16px 20px;margin-bottom:20px;font-size:14.5px;line-height:1.70;color:var(--navy3);border-left:4px solid var(--teal);display:none;font-weight:500}
+.quiz-btn{width:100%;padding:15px;border-radius:var(--r);background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff;font-weight:800;font-size:15px;border:none;cursor:pointer;transition:all .18s;box-shadow:0 4px 16px rgba(10,31,61,.25)}
+.quiz-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(10,31,61,.30)}
+.quiz-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.quiz-score-card{text-align:center;padding:10px 0}
+.score-num{font-family:'Fraunces',serif;font-size:72px;font-weight:900;color:var(--navy);line-height:1}
+.score-sub{font-size:17px;color:var(--text2);margin-top:8px}
+.score-stars{font-size:36px;margin:18px 0}
+.score-msg{font-size:16px;color:var(--text2);margin-bottom:28px;line-height:1.6}
+
+/* =========== TEMARIO =========== */
+.temario-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px}
+.temario-card{background:#fff;border-radius:var(--r2);border:1.5px solid var(--gray3);overflow:hidden;cursor:pointer;transition:all .22s;box-shadow:0 2px 10px rgba(10,31,61,.05)}
+.temario-card:hover{box-shadow:var(--sh2);transform:translateY(-3px)}
+.tc-bar{height:7px}
+.tc-body{padding:26px}
+.tc-order{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);margin-bottom:10px}
+.tc-body h3{font-family:'Fraunces',serif;font-size:19px;color:var(--navy);margin-bottom:9px;font-weight:800}
+.tc-body p{font-size:13.5px;color:var(--text2);line-height:1.65}
+.tc-meta{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
+.tc-badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px}
+.badge-pri{background:#dbeafe;color:#1e40af}
+.badge-sec{background:#f3e8ff;color:#6b21a8}
+.badge-both{background:#d1fae5;color:#065f46}
+
+/* =========== FOOTER =========== */
+footer{background:var(--navy);color:rgba(255,255,255,.6);padding:48px 32px 32px}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand{}
+.footer-brand .fb-logo{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.footer-brand .fb-icon{width:48px;height:48px;background:var(--gold);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--navy)}
+.footer-brand h3{font-family:'Fraunces',serif;font-size:20px;font-weight:900;color:#fff}
+.footer-brand p{font-size:13px;line-height:1.7;color:rgba(255,255,255,.55)}
+.footer-section h4{font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:16px}
+.footer-section li{list-style:none;font-size:13.5px;color:rgba(255,255,255,.65);margin-bottom:8px;cursor:pointer;transition:color .15s}
+.footer-section li:hover{color:#fff}
+.footer-author{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:var(--r);padding:20px 22px;display:flex;gap:16px;align-items:flex-start}
+.fa-shield{width:60px;height:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.fa-info h4{font-size:15px;font-weight:800;color:#fff;margin-bottom:4px}
+.fa-info p{font-size:12.5px;color:rgba(255,255,255,.60);line-height:1.65}
+.fa-info .fa-tag{display:inline-block;background:rgba(245,166,35,.2);color:var(--gold);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:8px}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.10);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom p{font-size:12.5px;color:rgba(255,255,255,.40)}
+
+/* =========== RESPONSIVE =========== */
+@media(max-width:900px){
+  .hero-content{grid-template-columns:1fr}
+  .hero-cityscape{display:none}
+  .lesson-layout{grid-template-columns:1fr}
+  .lesson-sidebar{position:static}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .footer-top{grid-template-columns:1fr}
+  .nav-links{overflow-x:auto;gap:0}
+  .nav-author-name,.nav-author-role{display:none}
+}
+
+/* =========== ANIMATIONS =========== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.screen.active .section,.screen.active .hero,.screen.active .stats-bar{animation:fadeUp .38s ease forwards}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="showScreen('home')">
+      <!-- Escudo Universidad del Magdalena -->
+      <svg width="42" height="42" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Compass rose base circle -->
+        <circle cx="100" cy="100" r="95" fill="#c0392b" stroke="#f5a623" stroke-width="4"/>
+        <!-- Top brown/orange hemisphere -->
+        <path d="M10 100 Q10 10 100 10 Q190 10 190 100 Z" fill="#c87941"/>
+        <!-- Bottom blue hemisphere -->
+        <path d="M10 100 Q10 190 100 190 Q190 190 190 100 Z" fill="#1a5fa8"/>
+        <!-- Gold compass ring -->
+        <circle cx="100" cy="100" r="95" fill="none" stroke="#f5a623" stroke-width="6"/>
+        <!-- Compass arms N-S (blue-gold) -->
+        <polygon points="100,12 108,100 100,188 92,100" fill="#4a9fd4"/>
+        <polygon points="100,12 108,100 100,188 92,100" fill="none" stroke="#f5a623" stroke-width="1"/>
+        <!-- Compass arms E-W (gold) -->
+        <polygon points="12,100 100,108 188,100 100,92" fill="#f5a623"/>
+        <!-- Center sun/bird emblem -->
+        <circle cx="100" cy="100" r="22" fill="#f5a623" opacity=".9"/>
+        <circle cx="100" cy="100" r="16" fill="#c87941"/>
+        <!-- Gold text arch top -->
+        <path id="arcTop" d="M 18,100 A 82,82 0 0,1 182,100" fill="none"/>
+        <text font-family="Georgia,serif" font-size="13" font-weight="bold" fill="#f5a623">
+          <textPath href="#arcTop" startOffset="8%">UNIVERSIDAD DEL MAGDALENA</textPath>
+        </text>
+        <!-- Year 1962 bottom -->
+        <text x="100" y="175" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="bold" fill="white">1962</text>
+        <!-- Decorative bottom wave shapes -->
+        <path d="M30 148 Q40 140 50 148 Q60 156 70 148 Q80 140 90 148 Q100 156 110 148 Q120 140 130 148 Q140 156 150 148 Q160 140 170 148" fill="none" stroke="#f5a623" stroke-width="2" opacity=".7"/>
+      </svg>
+      <div>
+        <div class="nav-title">FraccionesSM</div>
+        <div class="nav-sub">Universidad del Magdalena · Lic. Matemáticas</div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <button class="nav-link active" id="nav-home" onclick="showScreen('home')"><i class="ti ti-home"></i> Inicio</button>
+      <button class="nav-link" id="nav-temario" onclick="showScreen('temario')"><i class="ti ti-list"></i> Temario</button>
+      <button class="nav-link" id="nav-lesson" onclick="showScreen('lesson')"><i class="ti ti-book-2"></i> Lecciones</button>
+      <button class="nav-link" id="nav-ejercicios" onclick="showScreen('ejercicios')"><i class="ti ti-pencil"></i> Ejercicios</button>
+      <button class="nav-link" id="nav-glosario" onclick="showScreen('glosario')"><i class="ti ti-vocabulary"></i> Glosario</button>
+      <button class="nav-link" id="nav-quiz" onclick="showScreen('quiz')"><i class="ti ti-trophy"></i> Quiz <span class="nav-badge">¡Nuevo!</span></button>
+    </div>
+    <div class="nav-right">
+      <div class="nav-author">
+        <div class="nav-author-avatar">WV</div>
+        <div>
+          <div class="nav-author-name">Profe Waldo Viloria</div>
+          <div class="nav-author-role">Lic. Matemáticas · Unimag</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ================================================================
+     SCREEN 1 — HOME
+================================================================ -->
+<div class="screen active" id="screen-home">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg-pattern"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-pill">🌊 Hecho para Santa Marta · Colombia</div>
+        <h1>Aprende <em>Fracciones</em><br>con el Sabor<br>de tu Ciudad</h1>
+        <p>Una plataforma pedagógica con ejemplos del Morro, la Sierra Nevada, el Estadio y el mercado samario. Para estudiantes, padres y docentes de la región Caribe.</p>
+        <div class="hero-ctas">
+          <button class="btn-gold" onclick="showScreen('temario')"><i class="ti ti-rocket"></i> Ver Temario Completo</button>
+          <button class="btn-ghost" onclick="showScreen('lesson')"><i class="ti ti-player-play"></i> Empezar Ahora</button>
+        </div>
+      </div>
+      <!-- SANTA MARTA CITYSCAPE SVG -->
+      <svg class="hero-cityscape" viewBox="0 0 520 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Sky/Sea gradient -->
+        <defs>
+          <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a5276"/><stop offset="100%" stop-color="#2980b9"/></linearGradient>
+          <linearGradient id="sierra" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#b0c4de"/><stop offset="100%" stop-color="#708090"/></linearGradient>
+          <linearGradient id="morro" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5d6d7e"/><stop offset="100%" stop-color="#2c3e50"/></linearGradient>
+        </defs>
+        <!-- Sea -->
+        <rect x="0" y="210" width="520" height="70" rx="0" fill="url(#sea)" opacity=".7"/>
+        <!-- Waves -->
+        <path d="M0 220 Q40 215 80 222 Q120 229 160 220 Q200 211 240 218 Q280 225 320 218 Q360 211 400 218 Q440 225 480 218 L520 220 L520 280 L0 280Z" fill="#1a6fa0" opacity=".5"/>
+        <!-- Sierra Nevada — background mountains -->
+        <polygon points="160,140 220,50 280,140" fill="url(#sierra)" opacity=".6"/>
+        <polygon points="190,140 260,30 330,140" fill="#9eb3c8" opacity=".7"/>
+        <polygon points="240,140 300,55 360,140" fill="url(#sierra)" opacity=".5"/>
+        <!-- Snow caps -->
+        <polygon points="220,50 230,70 210,70" fill="white" opacity=".85"/>
+        <polygon points="260,30 272,55 248,55" fill="white" opacity=".85"/>
+        <!-- El Morro de Santa Marta -->
+        <ellipse cx="60" cy="210" rx="55" ry="70" fill="url(#morro)" opacity=".9"/>
+        <ellipse cx="60" cy="200" rx="40" ry="55" fill="#3d5166" opacity=".8"/>
+        <ellipse cx="60" cy="190" rx="28" ry="42" fill="#2c3e50" opacity=".9"/>
+        <circle cx="60" cy="155" r="12" fill="#253040"/>
+        <!-- Flag on El Morro -->
+        <line x1="60" y1="143" x2="60" y2="118" stroke="white" stroke-width="1.5"/>
+        <polygon points="60,118 75,123 60,128" fill="#f5a623"/>
+        <!-- City buildings -->
+        <rect x="310" y="160" width="28" height="50" rx="3" fill="#1c2e44" opacity=".9"/>
+        <rect x="314" y="164" width="5" height="5" rx="1" fill="rgba(255,220,100,.7)"/>
+        <rect x="323" y="164" width="5" height="5" rx="1" fill="rgba(255,220,100,.5)"/>
+        <rect x="314" y="174" width="5" height="5" rx="1" fill="rgba(255,220,100,.6)"/>
+        <rect x="342" y="170" width="22" height="40" rx="3" fill="#152232" opacity=".9"/>
+        <rect x="346" y="174" width="4" height="4" rx="1" fill="rgba(255,220,100,.7)"/>
+        <rect x="354" y="178" width="4" height="4" rx="1" fill="rgba(255,220,100,.5)"/>
+        <rect x="368" y="175" width="32" height="35" rx="3" fill="#1a2d3f" opacity=".9"/>
+        <rect x="372" y="179" width="5" height="5" rx="1" fill="rgba(255,220,100,.6)"/>
+        <rect x="382" y="179" width="5" height="5" rx="1" fill="rgba(255,220,100,.7)"/>
+        <!-- Estadio hint (arch) -->
+        <path d="M400 200 Q430 178 460 200" stroke="#f5a623" stroke-width="2.5" fill="none" opacity=".7"/>
+        <rect x="400" y="200" width="60" height="10" rx="2" fill="#0d2137" opacity=".8"/>
+        <!-- Palm trees -->
+        <line x1="130" y1="210" x2="130" y2="180" stroke="#5d4037" stroke-width="3"/>
+        <ellipse cx="123" cy="179" rx="10" ry="5" fill="#2e7d32" transform="rotate(-20,123,179)"/>
+        <ellipse cx="132" cy="175" rx="11" ry="4" fill="#388e3c" transform="rotate(10,132,175)"/>
+        <ellipse cx="138" cy="179" rx="9" ry="4" fill="#2e7d32" transform="rotate(30,138,179)"/>
+        <!-- Fraction decorations floating -->
+        <text x="460" y="80" font-family="Georgia,serif" font-size="22" fill="rgba(245,166,35,.55)" font-weight="bold">½</text>
+        <text x="420" y="130" font-family="Georgia,serif" font-size="18" fill="rgba(255,255,255,.30)" font-weight="bold">¾</text>
+        <text x="480" y="130" font-family="Georgia,serif" font-size="16" fill="rgba(255,255,255,.25)" font-weight="bold">⅓</text>
+      </svg>
+    </div>
+    <!-- Wave divider -->
+    <svg class="hero-waves" viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,60 L0,60Z" fill="#f8fafc"/>
+    </svg>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-icon" style="background:#e0f2fe;color:#0284c7"><i class="ti ti-book-2"></i></div>
+        <div><div class="stat-num">5</div><div class="stat-lbl">Lecciones completas</div></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon" style="background:#fef3c7;color:#d97706"><i class="ti ti-pencil"></i></div>
+        <div><div class="stat-num">30+</div><div class="stat-lbl">Ejercicios por nivel</div></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon" style="background:#d1fae5;color:#059669"><i class="ti ti-map-pin"></i></div>
+        <div><div class="stat-num">100%</div><div class="stat-lbl">Contexto samario</div></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon" style="background:#f3e8ff;color:#7c3aed"><i class="ti ti-trophy"></i></div>
+        <div><div class="stat-num">10</div><div class="stat-lbl">Preguntas quiz</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPICS -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-tag">Elige tu lección</div>
+      <h2>Temas de la Plataforma</h2>
+      <p>Cada lección tiene: concepto visual, regla paso a paso, ejemplos resueltos, desafío real y alerta de error. Progresa desde lo básico.</p>
+    </div>
+    <div class="topics-grid">
+      <div class="topic-card" onclick="loadLesson('conceptos');showScreen('lesson')">
+        <div class="topic-card-top" style="background:linear-gradient(135deg,#1a3d6e,#0a1f3d)">
+          <span class="topic-num-big">01</span><span class="topic-emoji">🍕</span>
+        </div>
+        <div class="topic-card-body">
+          <h3>¿Qué es una Fracción?</h3>
+          <p>Concepto, partes, representación visual e interpretación en la vida samaria.</p>
+          <span class="topic-level badge-pri" style="display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;background:#dbeafe;color:#1e40af;margin-top:12px">Básica Primaria</span>
+        </div>
+      </div>
+      <div class="topic-card" onclick="loadLesson('suma');showScreen('lesson')">
+        <div class="topic-card-top" style="background:linear-gradient(135deg,#c2410c,#7c2d12)">
+          <span class="topic-num-big">02</span><span class="topic-emoji">➕</span>
+        </div>
+        <div class="topic-card-body">
+          <h3>Suma de Fracciones</h3>
+          <p>Denominadores iguales y distintos. MCM. Del mercado al estadio.</p>
+          <span class="topic-level" style="display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;background:#d1fae5;color:#065f46;margin-top:12px">Ambos niveles</span>
+        </div>
+      </div>
+      <div class="topic-card" onclick="loadLesson('resta');showScreen('lesson')">
+        <div class="topic-card-top" style="background:linear-gradient(135deg,#7e22ce,#4c1d95)">
+          <span class="topic-num-big">03</span><span class="topic-emoji">➖</span>
+        </div>
+        <div class="topic-card-body">
+          <h3>Resta de Fracciones</h3>
+          <p>Quitar partes con y sin igual denominador. Ejemplos del barrio.</p>
+          <span class="topic-level" style="display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;background:#d1fae5;color:#065f46;margin-top:12px">Ambos niveles</span>
+        </div>
+      </div>
+      <div class="topic-card" onclick="loadLesson('multiplicacion');showScreen('lesson')">
+        <div class="topic-card-top" style="background:linear-gradient(135deg,#065f46,#022c22)">
+          <span class="topic-num-big">04</span><span class="topic-emoji">✖️</span>
+        </div>
+        <div class="topic-card-body">
+          <h3>Multiplicación</h3>
+          <p>Una fracción de otra fracción. Sin denominador común. Simplificación.</p>
+          <span class="topic-level badge-sec" style="display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;background:#f3e8ff;color:#6b21a8;margin-top:12px">Básica Secundaria</span>
+        </div>
+      </div>
+      <div class="topic-card" onclick="loadLesson('division');showScreen('lesson')">
+        <div class="topic-card-top" style="background:linear-gradient(135deg,#92400e,#451a03)">
+          <span class="topic-num-big">05</span><span class="topic-emoji">➗</span>
+        </div>
+        <div class="topic-card-body">
+          <h3>División de Fracciones</h3>
+          <p>Invertir y multiplicar. Por qué funciona. Repartos en la playa.</p>
+          <span class="topic-level badge-sec" style="display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;background:#f3e8ff;color:#6b21a8;margin-top:12px">Básica Secundaria</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Author + Unimag card -->
+    <div style="margin-top:60px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:var(--r2);padding:40px;display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;box-shadow:var(--sh2)">
+      <!-- UNIMAG SHIELD SVG -->
+      <svg width="110" height="130" viewBox="0 0 110 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="shG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1e5fa8"/><stop offset="100%" stop-color="#0a2240"/>
+          </linearGradient>
+        </defs>
+        <!-- Shield shape -->
+        <path d="M55 4 L104 22 L104 70 Q104 108 55 126 Q6 108 6 70 L6 22 Z" fill="url(#shG)" stroke="#f5a623" stroke-width="3"/>
+        <!-- Gold cross / division -->
+        <line x1="55" y1="20" x2="55" y2="115" stroke="#f5a623" stroke-width="2.5" opacity=".6"/>
+        <line x1="18" y1="65" x2="92" y2="65" stroke="#f5a623" stroke-width="2.5" opacity=".6"/>
+        <!-- Top-left: book -->
+        <rect x="22" y="28" width="24" height="18" rx="2" fill="white" opacity=".9"/>
+        <line x1="34" y1="28" x2="34" y2="46" stroke="#0a2240" stroke-width="1.5"/>
+        <line x1="25" y1="33" x2="32" y2="33" stroke="#0a2240" stroke-width="1"/>
+        <line x1="36" y1="33" x2="43" y2="33" stroke="#0a2240" stroke-width="1"/>
+        <!-- Top-right: fraction symbol -->
+        <circle cx="75" cy="31" r="4" fill="white" opacity=".9"/>
+        <line x1="68" y1="37" x2="82" y2="37" stroke="white" stroke-width="2.5" opacity=".9"/>
+        <circle cx="75" cy="43" r="4" fill="white" opacity=".9"/>
+        <!-- Bottom-left: mountain (Sierra) -->
+        <polygon points="20,78 34,55 48,78" fill="white" opacity=".8"/>
+        <polygon points="26,78 34,62 42,78" fill="#b0c4de" opacity=".7"/>
+        <!-- Bottom-right: wave (Mar) -->
+        <path d="M59 72 Q66 68 73 72 Q80 76 87 72" stroke="white" stroke-width="2.5" fill="none" opacity=".9"/>
+        <path d="M59 79 Q66 75 73 79 Q80 83 87 79" stroke="white" stroke-width="2" fill="none" opacity=".7"/>
+        <!-- Center text -->
+        <text x="55" y="63" text-anchor="middle" font-family="Georgia,serif" font-size="6" fill="white" opacity=".7" font-weight="bold">UNIMAGDALENA</text>
+        <!-- Bottom text -->
+        <text x="55" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="7" fill="#f5a623" font-weight="bold">1958</text>
+      </svg>
+      <div>
+        <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(245,166,35,.18);border:1px solid rgba(245,166,35,.35);border-radius:30px;padding:5px 14px;font-size:11.5px;font-weight:800;color:var(--gold);margin-bottom:14px;letter-spacing:.05em;text-transform:uppercase">
+          <i class="ti ti-user-check" style="font-size:13px"></i> Autor y Docente
+        </div>
+        <h3 style="font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:#fff;margin-bottom:8px">Profe Waldo Viloria</h3>
+        <p style="font-size:15px;color:rgba(255,255,255,.70);line-height:1.75;margin-bottom:14px">Licenciado en Matemáticas · Universidad del Magdalena<br>Comprometido con una enseñanza contextualizada, significativa y cercana a la realidad del Caribe colombiano.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <span style="background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.80);font-size:12px;font-weight:700;padding:5px 13px;border-radius:20px"><i class="ti ti-school" style="font-size:13px;vertical-align:-2px;margin-right:5px"></i>Licenciatura en Matemáticas</span>
+          <span style="background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.80);font-size:12px;font-weight:700;padding:5px 13px;border-radius:20px"><i class="ti ti-map-pin" style="font-size:13px;vertical-align:-2px;margin-right:5px"></i>Santa Marta, Colombia</span>
+          <span style="background:rgba(245,166,35,.18);border:1px solid rgba(245,166,35,.35);color:var(--gold);font-size:12px;font-weight:700;padding:5px 13px;border-radius:20px"><i class="ti ti-building" style="font-size:13px;vertical-align:-2px;margin-right:5px"></i>Universidad del Magdalena</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SCREEN 2 — TEMARIO
+================================================================ -->
+<div class="screen" id="screen-temario">
+  <div class="section">
+    <div class="section-head">
+      <div class="section-tag">Organización curricular</div>
+      <h2>Temario Progresivo de Fracciones</h2>
+      <p>Contenidos ordenados desde lo más básico hasta operaciones combinadas. Haz clic en cualquier tema para ir a la lección.</p>
+    </div>
+    <div class="temario-grid" style="margin-top:32px">
+      <div class="temario-card" onclick="loadLesson('conceptos');showScreen('lesson')">
+        <div class="tc-bar" style="background:linear-gradient(90deg,#0a1f3d,#1a3d6e)"></div>
+        <div class="tc-body">
+          <div class="tc-order">Tema 1 · Fundamentos</div>
+          <h3>¿Qué es una Fracción?</h3>
+          <p>Numerador, denominador, tipos de fracciones. Representación visual con ejemplos de la Sierra Nevada y El Morro.</p>
+          <div class="tc-meta"><span class="tc-badge badge-pri">Básica Primaria</span><i class="ti ti-arrow-right" style="color:var(--gray)"></i></div>
+        </div>
+      </div>
+      <div class="temario-card" onclick="loadLesson('conceptos');showScreen('lesson')">
+        <div class="tc-bar" style="background:linear-gradient(90deg,#1d4ed8,#1e40af)"></div>
+        <div class="tc-body">
+          <div class="tc-order">Tema 2 · Comparación</div>
+          <h3>Fracciones Equivalentes</h3>
+          <p>Comparar y simplificar fracciones. Fracciones que representan lo mismo aunque parezcan distintas.</p>
+          <div class="tc-meta"><span class="tc-badge badge-pri">Básica Primaria</span><i class="ti ti-arrow-right" style="color:var(--gray)"></i></div>
+        </div>
+      </div>
+      <div class="temario-card" onclick="loadLesson('suma');showScreen('lesson')">
+        <div class="tc-bar" style="background:linear-gradient(90deg,#c2410c,#7c2d12)"></div>
+        <div class="tc-body">
+          <div class="tc-order">Tema 3 · Operaciones</div>
+          <h3>Suma de Fracciones</h3>
+          <p>Suma con igual y diferente denominador. MCM. Del mercado samario al bus del Rodadero.</p>
+          <div class="tc-meta"><span class="tc-badge badge-both">Ambos niveles</span><i class="ti ti-arrow-right" style="color:var(--gray)"></i></div>
+        </div>
+      </div>
+      <div class="temario-card" onclick="loadLesson('resta');showScreen('lesson')">
+        <div class="tc-bar" style="background:linear-gradient(90deg,#7e22ce,#4c1d95)"></div>
+        <div class="tc-body">
+          <div class="tc-order">Tema 4 · Operaciones</div>
+          <h3>Resta de Fracciones</h3>
+          <p>Restar con mismo y distinto denominador. Errores frecuentes y estrategias para evitarlos.</p>
+          <div class="tc-meta"><span class="tc-badge badge-both">Ambos niveles</span><i class="ti ti-arrow-right" style="color:var(--gray)"></i></div>
+        </div>
+      </div>
+      <div class="temario-card" onclick="loadLesson('multiplicacion');showScreen('lesson')">
+        <div class="tc-bar" style="background:linear-gradient(90deg,#065f46,#022c22)"></div>
+        <div class="tc-body">
+          <div class="tc-order">Tema 5 · Operaciones</div>
+          <h3>Multiplicación de Fracciones</h3>
+          <p>Multiplicar directo sin MCM. Una fracción de otra fracción. Simplificación cruzada.</p>
+          <div class="tc-meta"><span class="tc-badge badge-sec">Básica Secundaria</span><i class="ti ti-arrow-right" style="color:var(--gray)"></i></div>
+        </div>
+      </div>
+      <div class="temario-card" onclick="loadLesson('division');showScreen('lesson')">
+        <div class="tc-bar" style="background:linear-gradient(90deg,#92400e,#451a03)"></div>
+        <div class="tc-body">
+          <div class="tc-order">Tema 6 · Operaciones</div>
+          <h3>División de Fracciones</h3>
+          <p>Invertir y multiplicar. El recíproco. Repartos de pescado y jugos en el Mercado Público.</p>
+          <div class="tc-meta"><span class="tc-badge badge-sec">Básica Secundaria</span><i class="ti ti-arrow-right" style="color:var(--gray)"></i></div>
+        </div>
+      </div>
+      <!-- TEMA 7 — desbloqueable con Quiz 7/10 -->
+      <div class="temario-card" id="tema7-card" style="opacity:.65;cursor:default;position:relative;overflow:hidden" onclick="checkUnlock()">
+        <div class="tc-bar" style="background:linear-gradient(90deg,#6b21a8,#4c1d95)"></div>
+        <!-- Lock overlay -->
+        <div id="tema7-lock" style="position:absolute;inset:0;background:rgba(255,255,255,.55);backdrop-filter:blur(2px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;z-index:2;border-radius:inherit;cursor:pointer">
+          <i class="ti ti-lock" style="font-size:36px;color:#6b21a8;opacity:.8"></i>
+          <div style="font-size:12.5px;font-weight:700;color:#6b21a8;text-align:center;line-height:1.4">
+            Completa el Quiz<br><span style="font-size:11px;font-weight:500;color:#9d174d">Necesitas 7/10 o más</span>
+          </div>
+          <div style="font-size:11px;color:#6b7280;margin-top:2px" id="quiz-score-hint">Tu mejor puntaje: <strong id="best-score-display">—</strong></div>
+        </div>
+        <div class="tc-body">
+          <div class="tc-order">Tema 7 · Cierre</div>
+          <h3>Operaciones Combinadas</h3>
+          <p>Suma, resta, multiplicación y división en una sola expresión. Orden de operaciones (PEMDAS) aplicado a fracciones.</p>
+          <div class="tc-meta"><span class="tc-badge badge-sec">Básica Secundaria</span><i class="ti ti-lock" style="color:#6b21a8"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SCREEN 3 — LESSON
+================================================================ -->
+<div class="screen" id="screen-lesson">
+  <div class="lesson-layout">
+    <aside class="lesson-sidebar">
+      <div class="sidebar-header">
+        <h3>Contenido de la Lección</h3>
+        <p>Sigue el orden recomendado</p>
+      </div>
+      <div class="sidebar-link active"><i class="ti ti-eye"></i> Concepto Visual</div>
+      <div class="sidebar-link"><i class="ti ti-list-numbers"></i> Regla Paso a Paso</div>
+      <div class="sidebar-link"><i class="ti ti-bulb"></i> Ejemplos Resueltos</div>
+      <div class="sidebar-link"><i class="ti ti-map-pin"></i> Desafío Real</div>
+      <div class="sidebar-link"><i class="ti ti-alert-triangle"></i> Error Común</div>
+      <div class="sidebar-link" onclick="showScreen('ejercicios')"><i class="ti ti-pencil"></i> Ir a Ejercicios</div>
+      <div class="sidebar-link" onclick="showScreen('quiz')"><i class="ti ti-trophy"></i> Ir al Quiz</div>
+      <!-- Profe info in sidebar -->
+      <div class="sidebar-profe">
+        <div class="profe-avatar">WV</div>
+        <div>
+          <div class="profe-name">Profe Waldo Viloria</div>
+          <div class="profe-role">Lic. Matemáticas · Unimag</div>
+        </div>
+      </div>
+    </aside>
+    <div id="lesson-content" class="lesson-content"></div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SCREEN 4 — EJERCICIOS
+================================================================ -->
+<div class="screen" id="screen-ejercicios">
+  <div class="section">
+    <div class="section-head">
+      <div class="section-tag">Practica y refuerza</div>
+      <h2>Ejercicios por Niveles</h2>
+      <p>Contextualizados en Santa Marta: la tienda del barrio, el Mercado Público, El Rodadero, el Estadio Sierra Nevada y más.</p>
+    </div>
+    <div class="prog-summary">
+      <div>
+        <div class="prog-text">Tu progreso actual</div>
+        <div class="prog-score" id="ex-score-display">0 / 0 correctos</div>
+      </div>
+      <div style="flex:1;background:var(--gray3);height:9px;border-radius:20px;overflow:hidden">
+        <div id="ex-progress-bar" style="height:100%;background:linear-gradient(90deg,var(--teal),var(--skydk));border-radius:20px;width:0%;transition:width .4s"></div>
+      </div>
+      <button onclick="resetExercises()" style="display:flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px;border:2px solid var(--gray3);background:#fff;font-weight:700;font-size:13px;cursor:pointer;color:var(--navy)">
+        <i class="ti ti-refresh"></i> Reiniciar
+      </button>
+    </div>
+    <div class="ex-tabs">
+      <button class="ex-tab active" onclick="switchExTab('basico',this)">🟢 Básico</button>
+      <button class="ex-tab" onclick="switchExTab('intermedio',this)">🟡 Intermedio</button>
+      <button class="ex-tab" onclick="switchExTab('avanzado',this)">🔴 Avanzado</button>
+    </div>
+
+    <div class="ex-set active" id="ex-basico">
+      <div class="exercise-item" id="ex-1">
+        <div class="ex-q">Ejercicio 1 — Suma con igual denominador</div>
+        <div class="ex-context">🍕 En el Estadio Sierra Nevada compraste una pizza cortada en 8 porciones. Comiste <b>2/8</b> en el primer tiempo y <b>3/8</b> en el segundo. ¿Qué fracción comiste en total?</div>
+        <div class="ex-input-wrap"><input type="text" id="ex-1-in" placeholder="Ej: 5/8"><button class="check-btn" onclick="checkEx('ex-1',['5/8'])">Verificar</button></div>
+        <div class="ex-feedback" id="ex-1-fb"></div>
+      </div>
+      <div class="exercise-item" id="ex-2">
+        <div class="ex-q">Ejercicio 2 — Resta con igual denominador</div>
+        <div class="ex-context">🧃 Un boli de mango estaba lleno <b>5/6</b> partes. Tu hermanito bebió <b>2/6</b>. ¿Cuánto queda del boli?</div>
+        <div class="ex-input-wrap"><input type="text" id="ex-2-in" placeholder="Escribe tu respuesta"><button class="check-btn" onclick="checkEx('ex-2',['3/6','1/2'])">Verificar</button></div>
+        <div class="ex-feedback" id="ex-2-fb"></div>
+      </div>
+      <div class="exercise-item" id="ex-3">
+        <div class="ex-q">Ejercicio 3 — Reconocer fracciones</div>
+        <div class="ex-context">🏖️ En la playa El Rodadero hay 10 vendedores. Si 4 venden paletas de coco, ¿qué fracción del total son los de paletas?</div>
+        <div class="ex-input-wrap"><input type="text" id="ex-3-in" placeholder="Escribe tu respuesta"><button class="check-btn" onclick="checkEx('ex-3',['4/10','2/5'])">Verificar</button></div>
+        <div class="ex-feedback" id="ex-3-fb"></div>
+      </div>
+    </div>
+
+    <div class="ex-set" id="ex-intermedio">
+      <div class="exercise-item" id="ex-4">
+        <div class="ex-q">Ejercicio 4 — Suma con diferente denominador</div>
+        <div class="ex-context">🚌 Tomás vive a <b>1/2</b> km del colegio. Yesid vive <b>1/3</b> km más allá. ¿Cuántos km hay desde la casa de Tomás hasta la de Yesid pasando por el colegio?</div>
+        <div class="ex-input-wrap"><input type="text" id="ex-4-in" placeholder="Escribe tu respuesta"><button class="check-btn" onclick="checkEx('ex-4',['5/6'])">Verificar</button></div>
+        <div class="ex-feedback" id="ex-4-fb"></div>
+      </div>
+      <div class="exercise-item" id="ex-5">
+        <div class="ex-q">Ejercicio 5 — Resta con diferente denominador</div>
+        <div class="ex-context">💰 Valeria tenía <b>3/4</b> de su mesada. Gastó <b>1/3</b> comprando bolis en la tienda del barrio. ¿Qué fracción de la mesada le queda?</div>
+        <div class="ex-input-wrap"><input type="text" id="ex-5-in" placeholder="Escribe tu respuesta"><button class="check-btn" onclick="checkEx('ex-5',['5/12'])">Verificar</button></div>
+        <div class="ex-feedback" id="ex-5-fb"></div>
+      </div>
+      <div class="exercise-item" id="ex-6">
+        <div class="ex-q">Ejercicio 6 — Multiplicación básica</div>
+        <div class="ex-context">🎂 En el cumpleaños queda <b>2/3</b> del ponqué. Decides repartir <b>1/2</b> de esa parte. ¿Qué fracción del ponqué original repartes?</div>
+        <div class="ex-input-wrap"><input type="text" id="ex-6-in" placeholder="Escribe tu respuesta"><button class="check-btn" onclick="checkEx('ex-6',['2/6','1/3'])">Verificar</button></div>
+        <div class="ex-feedback" id="ex-6-fb"></div>
+      </div>
+    </div>
+
+    <div class="ex-set" id="ex-avanzado">
+      <div class="exercise-item" id="ex-7">
+        <div class="ex-q">Ejercicio 7 — División de fracciones</div>
+        <div class="ex-context">🐟 Un pescador en el Mercado Público tiene <b>3/4</b> kg de pescado. Quiere hacer porciones de <b>1/8</b> kg. ¿Cuántas porciones puede vender?</div>
+        <div class="ex-input-wrap"><input type="text" id="ex-7-in" placeholder="Número entero de porciones"><button class="check-btn" onclick="checkEx('ex-7',['6'])">Verificar</button></div>
+        <div class="ex-feedback" id="ex-7-fb"></div>
+      </div>
+      <div class="exercise-item" id="ex-8">
+        <div class="ex-q">Ejercicio 8 — Suma de tres fracciones</div>
+        <div class="ex-context">🛒 En el mercado compraste <b>1/2</b> kg de mango costeño, <b>1/4</b> kg de papaya y <b>3/8</b> kg de guayaba. ¿Cuántos kg de fruta compraste en total?</div>
+        <div class="ex-input-wrap"><input type="text" id="ex-8-in" placeholder="Escribe tu respuesta"><button class="check-btn" onclick="checkEx('ex-8',['9/8','1 1/8'])">Verificar</button></div>
+        <div class="ex-feedback" id="ex-8-fb"></div>
+      </div>
+      <div class="exercise-item" id="ex-9">
+        <div class="ex-q">Ejercicio 9 — Razonamiento avanzado</div>
+        <div class="ex-context">⚽ El equipo ganó <b>2/3</b> de los partidos jugados en la liga del barrio. De esos partidos ganados, <b>1/2</b> fue por goleada. ¿Qué fracción del total de partidos se ganó por goleada?</div>
+        <div class="ex-input-wrap"><input type="text" id="ex-9-in" placeholder="Escribe tu respuesta"><button class="check-btn" onclick="checkEx('ex-9',['2/6','1/3'])">Verificar</button></div>
+        <div class="ex-feedback" id="ex-9-fb"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SCREEN 5 — GLOSARIO
+================================================================ -->
+<div class="screen" id="screen-glosario">
+  <div class="section">
+    <div class="section-head">
+      <div class="section-tag">Vocabulario matemático</div>
+      <h2>Glosario de Fracciones</h2>
+      <p>Todos los términos que necesitas, explicados con lenguaje claro y ejemplos del Caribe samario.</p>
+    </div>
+    <div class="search-box">
+      <i class="ti ti-search search-icon"></i>
+      <input type="text" placeholder="Busca un término: numerador, MCM, recíproco..." oninput="filterGlosario(this.value)">
+    </div>
+    <div class="glosario-grid" id="glosario-container"></div>
+  </div>
+</div>
+
+<!-- ================================================================
+     SCREEN 6 — QUIZ
+================================================================ -->
+<div class="screen" id="screen-quiz">
+  <div class="section">
+    <div class="section-head" style="text-align:center">
+      <div class="section-tag">Pon a prueba lo aprendido</div>
+      <h2>Quiz de Fracciones</h2>
+      <p>10 preguntas con situaciones de Santa Marta. ¡Demuestra cuánto sabes!</p>
+    </div>
+    <div class="quiz-wrap">
+      <div class="quiz-card" id="quiz-card"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================
+     FOOTER
+================================================================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="fb-logo">
+          <div class="fb-icon">½</div>
+          <h3>FraccionesSM</h3>
+        </div>
+        <p>Plataforma educativa de matemáticas contextualizada para el Caribe colombiano. Creada con amor pedagógico desde Santa Marta, corazón de Colombia.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Lecciones</h4>
+        <ul>
+          <li onclick="loadLesson('conceptos');showScreen('lesson')">¿Qué es una Fracción?</li>
+          <li onclick="loadLesson('suma');showScreen('lesson')">Suma de Fracciones</li>
+          <li onclick="loadLesson('resta');showScreen('lesson')">Resta de Fracciones</li>
+          <li onclick="loadLesson('multiplicacion');showScreen('lesson')">Multiplicación</li>
+          <li onclick="loadLesson('division');showScreen('lesson')">División</li>
+        </ul>
+      </div>
+      <div class="footer-author">
+        <!-- Escudo oficial Universidad del Magdalena -->
+        <div class="fa-shield">
+          <svg width="70" height="70" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="95" fill="#c0392b" stroke="#f5a623" stroke-width="4"/>
+            <path d="M10 100 Q10 10 100 10 Q190 10 190 100 Z" fill="#c87941"/>
+            <path d="M10 100 Q10 190 100 190 Q190 190 190 100 Z" fill="#1a5fa8"/>
+            <circle cx="100" cy="100" r="95" fill="none" stroke="#f5a623" stroke-width="6"/>
+            <polygon points="100,12 108,100 100,188 92,100" fill="#4a9fd4"/>
+            <polygon points="12,100 100,108 188,100 100,92" fill="#f5a623"/>
+            <circle cx="100" cy="100" r="22" fill="#f5a623" opacity=".9"/>
+            <circle cx="100" cy="100" r="16" fill="#c87941"/>
+            <path id="arcTop2" d="M 18,100 A 82,82 0 0,1 182,100" fill="none"/>
+            <text font-family="Georgia,serif" font-size="13" font-weight="bold" fill="#f5a623">
+              <textPath href="#arcTop2" startOffset="8%">UNIVERSIDAD DEL MAGDALENA</textPath>
+            </text>
+            <text x="100" y="175" text-anchor="middle" font-family="Georgia,serif" font-size="14" font-weight="bold" fill="white">1962</text>
+            <path d="M30 148 Q40 140 50 148 Q60 156 70 148 Q80 140 90 148 Q100 156 110 148 Q120 140 130 148 Q140 156 150 148 Q160 140 170 148" fill="none" stroke="#f5a623" stroke-width="2" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="fa-info">
+          <h4>Profe Waldo Viloria</h4>
+          <p>Licenciado en Matemáticas — Universidad del Magdalena. Santa Marta, Colombia.</p>
+          <p style="margin-top:6px">Didáctica de la Matemática · Etnomatemáticas · Geometría</p>
+          <span class="fa-tag">Lic. Matemáticas · Unimag</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 FraccionesSM — Universidad del Magdalena · Santa Marta, Colombia</p>
+      <p>Diseñado con ❤️ para los estudiantes del Caribe 🌊</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ================================================================
+     JAVASCRIPT
+================================================================ -->
+<script>
+// ---- NAV ----
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  const n=document.getElementById('nav-'+name);
+  if(n)n.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ---- FRACTION HELPERS ----
+function frac(n,d,cls=''){
+  return `<span class="frac ${cls}"><span class="fn">${n}</span><span class="fd">${d}</span></span>`;
+}
+function fracRes(n,d){return frac(n,d,'math-result')}
+function op(sym){return `<span class="math-op">${sym}</span>`}
+function eq(){return `<span class="math-eq">=</span>`}
+function note(txt){return `<span class="math-note">${txt}</span>`}
+function mathBox(html){return `<div class="math-box">${html}</div>`}
+
+// ---- LESSONS DATA ----
+const lessons = {
+  conceptos:{
+    emoji:'🍕', color:'linear-gradient(135deg,#1a3d6e,#0a1f3d)',
+    level:'Básica Primaria', levelColor:'rgba(219,234,254,.9)', levelText:'#1e3a8a',
+    title:'¿Qué es una Fracción? ¡Partes de un Todo!',
+    intro:'Una fracción representa partes iguales de un todo. Cuando divides algo en porciones iguales y tomas algunas, estás usando fracciones sin darte cuenta.',
+    conceptoVisual:`
+      <p>Imagina que compraste una <strong>pizza en el Estadio Sierra Nevada</strong>, cortada en 8 porciones iguales. Si te comiste 3 porciones, comiste <em>tres octavos</em> de la pizza:</p>
+      ${mathBox(`${frac(3,8)} ${note('= tres octavos de pizza')}`)}
+      <div class="ctx-box" style="margin-top:20px">
+        <span class="ctx-icon">🌊</span>
+        <p><strong>Ejemplo en El Rodadero:</strong> Un vendedor divide su cava de agua en 4 partes iguales. Si vendió 1 parte, vendió la fracción <strong>1/4</strong> de su cava.</p>
+      </div>
+      <p>Toda fracción tiene dos partes:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+        <div style="background:#e0f2fe;border-radius:12px;padding:16px;border-left:4px solid var(--skydk)"><strong style="color:var(--navy);font-size:15px">Numerador (arriba)</strong><br><span style="font-size:13.5px;color:var(--navy3);margin-top:5px;display:block">Cuántas partes tomamos</span></div>
+        <div style="background:#d1fae5;border-radius:12px;padding:16px;border-left:4px solid #059669"><strong style="color:var(--navy);font-size:15px">Denominador (abajo)</strong><br><span style="font-size:13.5px;color:var(--navy3);margin-top:5px;display:block">En cuántas partes iguales se dividió el todo</span></div>
+      </div>`,
+    regla:[
+      {title:'Identifica el entero',desc:'Define claramente qué es "el todo": una pizza, una botella de jugo, un kilómetro, una hora de tiempo.'},
+      {title:'Divide en partes iguales',desc:'El denominador dice cuántas partes iguales tiene ese todo. ¡Deben ser estrictamente iguales!'},
+      {title:'Cuenta las partes tomadas',desc:'El numerador indica cuántas de esas partes iguales estamos considerando.'},
+      {title:'Escribe la fracción',desc:'Numerador arriba, barra de fracción en el medio, denominador abajo.'},
+    ],
+    ejemplos:[
+      {dif:'easy',title:'Ejemplo 1 — La paleta de coco',problem:'Daniela compró una paleta de coco en la playa. La dividió en 4 partes iguales y comió 1. ¿Qué fracción comió?',
+       steps:['El entero es la paleta completa.','La paleta está dividida en 4 partes → denominador = 4','Comió 1 parte → numerador = 1',`Fracción comida: ${frac(1,4)} (un cuarto)`]},
+      {dif:'med',title:'Ejemplo 2 — El bus del Rodadero',problem:'Un bus tiene 20 sillas. Están ocupadas 15. ¿Qué fracción de sillas está ocupada?',
+       steps:['El entero es el total de sillas: 20','Sillas ocupadas: 15 → numerador = 15','Total de sillas → denominador = 20',`Fracción ocupada: ${frac(15,20)} que simplificada es ${frac(3,4)}`]},
+      {dif:'hard',title:'Ejemplo 3 — El celular',problem:'Carlos usa el celular 3 horas diarias. El día tiene 24 horas. ¿Qué fracción del día usa el celular?',
+       steps:['El entero es el día: 24 horas','Horas de celular: 3 → numerador = 3','Horas totales del día → denominador = 24',`Fracción: ${frac(3,24)} = ${frac(1,8)} del día (simplificando entre 3)`]},
+    ],
+    desafio:'🎵 En el parque de Los Novios tocaron vallenato. De 12 canciones, 7 eran de Carlos Vives y el resto de Diomedes Díaz. ¿Qué fracción de las canciones fueron de Diomedes?',
+    desafioSol:['Total de canciones = 12 (el todo)','Canciones de Diomedes = 12 − 7 = 5',`Fracción = ${frac(5,12)}`,`Respuesta: el ${frac(5,12)} de las canciones fueron de Diomedes Díaz.`],
+    errorComun:'¡El denominador es el TOTAL de partes en que se dividió el entero, no cuántas tomaste! Tomaste y denominador son dos cosas distintas.',
+    errorEjemplo:'Si comes 3 de 8 porciones → la fracción es 3/8. Escribir 8/3 sería un error conceptual grave.'
+  },
+  suma:{
+    emoji:'➕', color:'linear-gradient(135deg,#c2410c,#7c2d12)',
+    level:'Ambos niveles', levelColor:'rgba(209,250,229,.9)', levelText:'#065f46',
+    title:'Suma de Fracciones: Juntando Partes',
+    intro:'Sumar fracciones es juntar partes del mismo tipo. Para poder sumarlas necesitamos hablar del mismo "tamaño" de parte. ¡Como sumar pesos con pesos!',
+    conceptoVisual:`
+      <p>En la tienda del barrio compraste <strong>1/4</strong> de kg de queso y luego regresaste por <strong>2/4</strong> más. Total:</p>
+      ${mathBox(`${frac(1,4)} ${op('+')} ${frac(2,4)} ${eq()} ${fracRes(3,4)}`)}
+      <div class="ctx-box ctx-box-teal">
+        <span class="ctx-icon">🚌</span>
+        <p><strong>¿Y si los denominadores son distintos?</strong> Es como sumar pesos y dólares: primero hay que convertirlos a la misma moneda. Con fracciones, usamos el <strong>Mínimo Común Múltiplo (MCM)</strong>.</p>
+      </div>
+      <p>Ejemplo con diferente denominador — Del bus al mercado:</p>
+      ${mathBox(`${frac(1,2)} ${op('+')} ${frac(1,3)} ${eq()} ${frac(3,6)} ${op('+')} ${frac(2,6)} ${eq()} ${fracRes(5,6)}`)}`,
+    regla:[
+      {title:'¿Son iguales los denominadores?',desc:'Si sí: suma SOLO los numeradores y deja el denominador igual. ¡Ya terminaste!'},
+      {title:'Si son distintos: halla el MCM',desc:'El MCM de los denominadores será el nuevo denominador común de ambas fracciones.'},
+      {title:'Convierte cada fracción',desc:'Divide el MCM entre el denominador original y multiplica ese resultado por el numerador correspondiente.'},
+      {title:'Suma los nuevos numeradores',desc:'Suma los numeradores convertidos. El denominador permanece igual (el MCM).'},
+      {title:'Simplifica si es posible',desc:'Divide numerador y denominador entre el Máximo Común Divisor para obtener la forma más simple.'},
+    ],
+    ejemplos:[
+      {dif:'easy',title:'Ejemplo 1 — Mismo denominador',problem:'En el recreo comiste 2/8 de galleta y tu amigo te dio 3/8. ¿Cuánto tienes?',
+       steps:['Denominadores iguales (8 = 8) → suma directa de numeradores',`${frac(2,8)} + ${frac(3,8)} = ${fracRes(5,8)}`,'Respuesta: tienes 5/8 de la galleta.']},
+      {dif:'med',title:'Ejemplo 2 — Diferente denominador',problem:'Caminaste 1/2 km al colegio y 1/3 km al mercado. ¿Cuánto caminaste?',
+       steps:['Denominadores distintos: 2 y 3 → MCM(2,3) = 6',`Convertir ${frac(1,2)}: 6÷2=3, entonces 1×3=3 → ${frac(3,6)}`,`Convertir ${frac(1,3)}: 6÷3=2, entonces 1×2=2 → ${frac(2,6)}`,`Sumar: ${frac(3,6)} + ${frac(2,6)} = ${fracRes(5,6)} km`]},
+      {dif:'hard',title:'Ejemplo 3 — Tres fracciones',problem:'Tres amigos comparten una botella: beben 1/2, 1/4 y 1/8 cada uno. ¿Cuánto bebieron en total?',
+       steps:['MCM(2,4,8) = 8',`Convertir: ${frac(1,2)}=${frac(4,8)}, ${frac(1,4)}=${frac(2,8)}, ${frac(1,8)}=${frac(1,8)}`,`Sumar: 4+2+1 = 7 → ${fracRes(7,8)}`,'Entre los tres bebieron 7/8 de la botella.']},
+    ],
+    desafio:'🛒 En el mercado de Santa Marta compraste 3/4 kg de mango costeño y 2/3 kg de maracuyá de la Sierra. ¿Cuántos kg de fruta compraste en total?',
+    desafioSol:['MCM(4,3) = 12',`Convertir ${frac(3,4)}: 12÷4=3, entonces 3×3=9 → ${frac(9,12)}`,`Convertir ${frac(2,3)}: 12÷3=4, entonces 2×4=8 → ${frac(8,12)}`,`Sumar: ${frac(9,12)} + ${frac(8,12)} = ${fracRes(17,12)} kg`,`También se escribe como 1 y ${frac(5,12)} kg de fruta.`],
+    errorComun:'El error MÁS FRECUENTE es sumar los denominadores directamente. ¡Jamás hagas eso! Los denominadores indican el "tamaño" de la parte, no se suman.',
+    errorEjemplo:`Incorrecto: ${frac(1,2)} + ${frac(1,3)} = ${frac(2,5)} ❌ &nbsp;&nbsp; Correcto: ${frac(1,2)} + ${frac(1,3)} = ${frac(3,6)} + ${frac(2,6)} = ${fracRes(5,6)} ✅`
+  },
+  resta:{
+    emoji:'➖', color:'linear-gradient(135deg,#7e22ce,#4c1d95)',
+    level:'Ambos niveles', levelColor:'rgba(209,250,229,.9)', levelText:'#065f46',
+    title:'Resta de Fracciones: Encontrando la Diferencia',
+    intro:'Restar fracciones significa quitar una cantidad fraccionaria de otra. La clave, igual que en la suma, es tener el mismo denominador antes de restar.',
+    conceptoVisual:`
+      <p>Valentina tenía <strong>3/4</strong> de un boli de mango. Su hermanito bebió <strong>1/4</strong>. ¿Cuánto le quedó?</p>
+      ${mathBox(`${frac(3,4)} ${op('−')} ${frac(1,4)} ${eq()} ${fracRes(2,4)} ${note('= 1/2')}`)}
+      <div class="ctx-box ctx-box-gold">
+        <span class="ctx-icon">⚽</span>
+        <p><strong>Con denominadores diferentes:</strong> Diego ahorró 5/6 de su propina y gastó 1/4 en el partido de fútbol en el estadio. Hay que encontrar el MCM antes de restar.</p>
+      </div>
+      <p>Ejemplo con diferente denominador:</p>
+      ${mathBox(`${frac(5,6)} ${op('−')} ${frac(1,4)} ${eq()} ${frac(10,12)} ${op('−')} ${frac(3,12)} ${eq()} ${fracRes(7,12)}`)}`,
+    regla:[
+      {title:'Verifica los denominadores',desc:'Si son iguales, resta los numeradores directamente. Si son distintos, hay que igualarlos primero.'},
+      {title:'Halla el MCM si aplica',desc:'Encuentra el Mínimo Común Múltiplo de los dos denominadores.'},
+      {title:'Convierte cada fracción',desc:'Transforma cada fracción para que tenga el MCM como denominador.'},
+      {title:'Resta los numeradores',desc:'Resta el numerador de abajo del numerador de arriba. El denominador NO cambia.'},
+      {title:'Simplifica',desc:'Reduce si numerador y denominador tienen factor común.'},
+    ],
+    ejemplos:[
+      {dif:'easy',title:'Ejemplo 1 — Mismo denominador',problem:'Tenías 5/6 de la mesada. Gastaste 2/6 en transporte. ¿Cuánto te queda?',
+       steps:['Denominadores iguales (6=6) → resta directa',`${frac(5,6)} − ${frac(2,6)} = ${fracRes(3,6)} = ${fracRes(1,2)}`,'Te queda la mitad de la mesada.']},
+      {dif:'med',title:'Ejemplo 2 — Diferente denominador',problem:'Ahorraste 3/4 de tu propina. Gastaste 1/3. ¿Cuánto te queda?',
+       steps:['MCM(4,3) = 12',`${frac(3,4)} = ${frac(9,12)}, ${frac(1,3)} = ${frac(4,12)}`,`Restar: ${frac(9,12)} − ${frac(4,12)} = ${fracRes(5,12)} de la propina.`]},
+      {dif:'hard',title:'Ejemplo 3 — ¿Cuánto falta?',problem:'La botella tiene 1/3 de agua. Necesitas 3/5 para la receta. ¿Cuánto te falta?',
+       steps:['MCM(3,5) = 15',`${frac(1,3)} = ${frac(5,15)}, ${frac(3,5)} = ${frac(9,15)}`,`Diferencia: ${frac(9,15)} − ${frac(5,15)} = ${fracRes(4,15)}`,'Te faltan 4/15 de la botella.']},
+    ],
+    desafio:'💧 Para la fiesta del barrio prepararon 5/6 de galón de limonada. Los niños tomaron 1/4 de galón. ¿Cuánto queda para los adultos?',
+    desafioSol:['MCM(6,4) = 12',`${frac(5,6)} = ${frac(10,12)}, ${frac(1,4)} = ${frac(3,12)}`,`Restar: ${frac(10,12)} − ${frac(3,12)} = ${fracRes(7,12)} de galón`,`Quedan ${fracRes(7,12)} de galón de limonada para los adultos.`],
+    errorComun:'Nunca restes los denominadores. El denominador representa el "tamaño" de la parte; ese tamaño no cambia cuando le quitas porciones.',
+    errorEjemplo:`Incorrecto: ${frac(5,8)} − ${frac(2,8)} = ${frac(3,0)} ❌ (¡sin sentido!) &nbsp;&nbsp; Correcto: ${frac(5,8)} − ${frac(2,8)} = ${fracRes(3,8)} ✅`
+  },
+  multiplicacion:{
+    emoji:'✖️', color:'linear-gradient(135deg,#065f46,#022c22)',
+    level:'Básica Secundaria', levelColor:'rgba(243,232,255,.9)', levelText:'#6b21a8',
+    title:'Multiplicación de Fracciones: Una Parte de Otra',
+    intro:'Multiplicar fracciones significa tomar "una fracción de otra fracción". Es la operación más directa: multiplicas numeradores entre sí y denominadores entre sí. ¡Sin MCM!',
+    conceptoVisual:`
+      <p>Tienes <strong>2/3</strong> de un pastel y quieres repartir <strong>1/2</strong> de esa porción entre dos amigos:</p>
+      ${mathBox(`${frac(1,2)} ${op('×')} ${frac(2,3)} ${eq()} ${fracRes(2,6)} ${note('= 1/3')}`)}
+      <div class="ctx-box">
+        <span class="ctx-icon">🏄</span>
+        <p><strong>En la playa de El Rodadero:</strong> Un vendedor tiene <strong>3/4</strong> de un cubo de paletas. Cada mañana vende <strong>2/3</strong> de lo que tiene. ¿Qué fracción del cubo original vende cada mañana?</p>
+      </div>
+      ${mathBox(`${frac(2,3)} ${op('×')} ${frac(3,4)} ${eq()} ${fracRes(6,12)} ${note('= 1/2 del cubo original')}`)}`  ,
+    regla:[
+      {title:'Multiplica los numeradores',desc:'El nuevo numerador es el producto de los numeradores de ambas fracciones.'},
+      {title:'Multiplica los denominadores',desc:'El nuevo denominador es el producto de los denominadores de ambas fracciones.'},
+      {title:'NO necesitas MCM',desc:'A diferencia de la suma y resta, aquí no igualas denominadores. Multiplica directamente.'},
+      {title:'Simplifica el resultado',desc:'Divide numerador y denominador entre su MCD para obtener la fracción más simple.'},
+      {title:'Puedes simplificar antes',desc:'Si un numerador y un denominador (cruzados) comparten factor, cancélalos antes de multiplicar.'},
+    ],
+    ejemplos:[
+      {dif:'easy',title:'Ejemplo 1 — Directo',problem:'Calcula 2/3 × 3/5',
+       steps:['Multiplicar numeradores: 2 × 3 = 6','Multiplicar denominadores: 3 × 5 = 15',`Resultado: ${frac(6,15)}`,`Simplificar (÷3): ${fracRes(2,5)}`]},
+      {dif:'med',title:'Ejemplo 2 — Con contexto',problem:'3/4 del salón son niñas. De ellas, 2/3 practican natación en la piscina de la ciudad. ¿Qué fracción del salón nada?',
+       steps:[`Calcular ${frac(2,3)} de ${frac(3,4)}: multiplicar`,`Numeradores: 2×3 = 6 &nbsp; Denominadores: 3×4 = 12`,`Resultado: ${frac(6,12)} = ${fracRes(1,2)} del salón nada.`]},
+      {dif:'hard',title:'Ejemplo 3 — Simplificando antes',problem:'Calcula 4/9 × 3/8',
+       steps:['4 y 8 comparten factor 4 → cancelar: 4/4=1, 8/4=2','3 y 9 comparten factor 3 → cancelar: 3/3=1, 9/3=3',`Fracción simplificada: ${frac(1,3)} × ${frac(1,2)} = ${fracRes(1,6)}`,'¡Mucho más fácil que 12/72 y luego simplificar!']},
+    ],
+    desafio:'🎂 En el cumpleaños de Juliana se comió 3/4 del ponqué. De esa parte, 2/3 fue comida por los adultos. ¿Qué fracción del ponqué total comieron los adultos?',
+    desafioSol:[`Multiplicar: ${frac(2,3)} × ${frac(3,4)}`,'Numeradores: 2×3 = 6 &nbsp; Denominadores: 3×4 = 12',`Resultado: ${frac(6,12)} = ${fracRes(1,2)}`,'Los adultos comieron la mitad del ponqué original.'],
+    errorComun:'¡No apliques la regla del MCM en la multiplicación! Eso es solo para suma y resta. En multiplicación, multiplica directo.',
+    errorEjemplo:`Incorrecto: ${frac(1,2)} × ${frac(1,3)} → convertir a ${frac(3,6)} × ${frac(2,6)} = ${frac(6,36)} ❌ &nbsp;&nbsp; Correcto: ${frac(1,2)} × ${frac(1,3)} = ${fracRes(1,6)} ✅`
+  },
+  division:{
+    emoji:'➗', color:'linear-gradient(135deg,#92400e,#451a03)',
+    level:'Básica Secundaria', levelColor:'rgba(243,232,255,.9)', levelText:'#6b21a8',
+    title:'División de Fracciones: Invertir y Multiplicar',
+    intro:'Dividir fracciones tiene un truco elegante: invertir la segunda fracción y multiplicar. Y lo mejor: ¡se puede entender por qué funciona matemáticamente!',
+    conceptoVisual:`
+      <p>Santiago tiene <strong>3/4</strong> de kg de pescado. Quiere hacer porciones de <strong>1/4</strong> de kg para vender en el Mercado Público. ¿Cuántas porciones puede hacer?</p>
+      ${mathBox(`${frac(3,4)} ${op('÷')} ${frac(1,4)} ${eq()} ${frac(3,4)} ${op('×')} ${frac(4,1)} ${eq()} ${fracRes(12,4)} ${note('= 3 porciones')}`)}
+      <div class="ctx-box ctx-box-teal">
+        <span class="ctx-icon">🐟</span>
+        <p><strong>¿Por qué invertir?</strong> Dividir entre 1/4 es preguntar: "¿cuántas veces cabe 1/4 en 3/4?". La respuesta es 3. Invertir la fracción convierte esa pregunta en una multiplicación directa.</p>
+      </div>`,
+    regla:[
+      {title:'Identifica dividendo y divisor',desc:'La primera fracción es el dividendo (lo que tienes). La segunda es el divisor (tamaño de cada parte).'},
+      {title:'Invierte SOLO el divisor',desc:'Intercambia numerador y denominador de la SEGUNDA fracción. Esto se llama "recíproco".'},
+      {title:'Cambia ÷ por ×',desc:'Ahora multiplica la primera fracción por el recíproco de la segunda.'},
+      {title:'Multiplica normalmente',desc:'Numerador × numerador y denominador × denominador.'},
+      {title:'Simplifica',desc:'Reduce si es posible. Si supera 1, convierte a número mixto si el problema lo requiere.'},
+    ],
+    ejemplos:[
+      {dif:'easy',title:'Ejemplo 1 — División básica',problem:'Calcula 1/2 ÷ 1/4',
+       steps:[`Invertir ${frac(1,4)} → ${frac(4,1)}`,`Cambiar a multiplicación: ${frac(1,2)} × ${frac(4,1)}`,`Multiplicar: ${frac(4,2)}`,`Simplificar: ${fracRes(2,1)} = 2 (caben dos cuartos en una mitad)`]},
+      {dif:'med',title:'Ejemplo 2 — Vasos de jugo',problem:'Tienes 2/3 de litro de jugo para llenar vasos de 1/6 de litro. ¿Cuántos vasos llenas?',
+       steps:[`Calcular: ${frac(2,3)} ÷ ${frac(1,6)}`,`Invertir ${frac(1,6)} → ${frac(6,1)}`,`Multiplicar: ${frac(2,3)} × ${frac(6,1)} = ${frac(12,3)} = ${fracRes(4,1)}`,'Puedes llenar exactamente 4 vasos.']},
+      {dif:'hard',title:'Ejemplo 3 — Resultado fraccionario',problem:'Tienes 3/8 de kg de harina y cada arepa necesita 1/2 kg. ¿Cuántas arepas puedes hacer?',
+       steps:[`Calcular: ${frac(3,8)} ÷ ${frac(1,2)}`,`Invertir ${frac(1,2)} → ${frac(2,1)}`,`Multiplicar: ${frac(3,8)} × ${frac(2,1)} = ${frac(6,8)} = ${fracRes(3,4)}`,'Solo puedes hacer 3/4 de arepa. No alcanza para una completa.']},
+    ],
+    desafio:'🧃 En una tienda de Pescaíto tienen 5/6 de caja de jugos Tampico. Cada combo lleva 1/3 de caja. ¿Cuántos combos pueden armar?',
+    desafioSol:[`Calcular: ${frac(5,6)} ÷ ${frac(1,3)}`,`Invertir ${frac(1,3)} → ${frac(3,1)}`,`Multiplicar: ${frac(5,6)} × ${frac(3,1)} = ${frac(15,6)} = ${fracRes(5,2)}`,`Simplificar: ${frac(5,2)} = 2.5`,'Pueden armar 2 combos completos y la mitad de otro.'],
+    errorComun:'Invierte SOLO la segunda fracción (el divisor). El error más común es invertir la primera, o invertir ambas. ¡Solo la del divisor!',
+    errorEjemplo:`Incorrecto: ${frac(3,4)} ÷ ${frac(2,5)} = ${frac(4,3)} × ${frac(2,5)} ❌ &nbsp;&nbsp; Correcto: ${frac(3,4)} × ${frac(5,2)} = ${fracRes(15,8)} ✅`
+  }
+};
+
+let currentLesson='suma';
+function loadLesson(key){
+  currentLesson=key;
+  const l=lessons[key];
+  const c=document.getElementById('lesson-content');
+  c.innerHTML=`
+    <div class="lesson-header" style="background:${l.color}">
+      <span class="lh-deco">${l.emoji}</span>
+      <div class="lh-content">
+        <div class="level-badge"><i class="ti ti-school" style="font-size:13px"></i> ${l.level}</div>
+        <h1>${l.title}</h1>
+        <p>${l.intro}</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <div class="block-head">
+        <div class="block-icon" style="background:#e0f2fe;color:#0284c7"><i class="ti ti-eye"></i></div>
+        <h2>1. El Concepto Visual</h2>
+      </div>
+      <div class="block-body">${l.conceptoVisual}</div>
+    </div>
+
+    <div class="content-block">
+      <div class="block-head">
+        <div class="block-icon" style="background:#fef3c7;color:#d97706"><i class="ti ti-list-numbers"></i></div>
+        <h2>2. La Regla Paso a Paso</h2>
+      </div>
+      <div class="block-body">
+        <ul class="steps-list">
+          ${l.regla.map((r,i)=>`<li class="step-item"><div class="step-num">${i+1}</div><div class="step-content"><h4>${r.title}</h4><p>${r.desc}</p></div></li>`).join('')}
+        </ul>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <div class="block-head">
+        <div class="block-icon" style="background:#d1fae5;color:#059669"><i class="ti ti-bulb"></i></div>
+        <h2>3. Ejemplos Resueltos</h2>
+      </div>
+      <div class="block-body">
+        ${l.ejemplos.map(e=>`
+          <div class="example-card">
+            <div class="example-head">
+              <span>${e.title}</span>
+              <span class="diff-badge ${e.dif==='easy'?'diff-easy':e.dif==='med'?'diff-med':'diff-hard'}">${e.dif==='easy'?'Básico':e.dif==='med'?'Intermedio':'Avanzado'}</span>
+            </div>
+            <div class="example-body">
+              <div class="problem">📋 ${e.problem}</div>
+              <div>
+                ${e.steps.map(s=>`<div class="sol-step"><span class="sol-arrow">→</span><span>${s}</span></div>`).join('')}
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="content-block">
+      <div class="block-head">
+        <div class="block-icon" style="background:#fce7f3;color:#9d174d"><i class="ti ti-map-pin"></i></div>
+        <h2>4. Desafío de la Vida Real</h2>
+      </div>
+      <div class="block-body">
+        <div class="ctx-box ctx-box-gold" style="margin-top:0">
+          <span class="ctx-icon">🎯</span>
+          <p>${l.desafio}</p>
+        </div>
+        <details style="margin-top:18px">
+          <summary style="cursor:pointer;font-weight:800;color:var(--navy);font-size:15px;padding:12px 0;list-style:none;user-select:none">▶ Ver solución paso a paso</summary>
+          <div style="margin-top:14px;padding:18px;background:var(--gray2);border-radius:var(--r);border-left:4px solid var(--teal)">
+            ${l.desafioSol.map((s,i)=>`<div class="sol-step" style="margin-bottom:10px"><span class="sol-arrow">${i+1}.</span><span>${s}</span></div>`).join('')}
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <div class="block-head">
+        <div class="block-icon" style="background:#fee2e2;color:#dc2626"><i class="ti ti-alert-triangle"></i></div>
+        <h2>5. ¡Alerta de Error Común!</h2>
+      </div>
+      <div class="block-body">
+        <div class="alert-box alert-danger">
+          <i class="ti ti-x"></i>
+          <div><h4>⚠️ Error frecuente</h4><p>${l.errorComun}</p></div>
+        </div>
+        <div class="alert-box alert-success" style="margin-top:12px">
+          <i class="ti ti-check"></i>
+          <div><h4>✅ Cómo evitarlo</h4><p>${l.errorEjemplo}</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;padding:8px 0 24px">
+      <button class="btn-gold" onclick="showScreen('ejercicios')"><i class="ti ti-pencil"></i> Ir a Ejercicios</button>
+      <button class="btn-ghost" style="color:var(--navy);background:var(--gray2);border-color:var(--gray3)" onclick="showScreen('quiz')"><i class="ti ti-trophy"></i> Hacer el Quiz</button>
+    </div>`;
+}
+loadLesson('suma');
+
+// ---- EXERCISES ----
+let exCorrect=0,exTotal=0;
+const exAnswered={};
+function checkEx(id,answers){
+  if(exAnswered[id])return;
+  const input=document.getElementById(id+'-in');
+  const fb=document.getElementById(id+'-fb');
+  const val=input.value.trim().toLowerCase().replace(/\s/g,'');
+  const correct=answers.some(a=>a.replace(/\s/g,'').toLowerCase()===val);
+  exAnswered[id]=true;exTotal++;
+  if(correct){exCorrect++;fb.textContent='✅ ¡Correcto! ¡Muy bien, sigue así, parcero!';fb.className='ex-feedback correct';document.getElementById(id).style.borderColor='#059669'}
+  else{fb.textContent='❌ No es correcto. La respuesta es: '+answers[0]+'. ¡Revisa el procedimiento!';fb.className='ex-feedback wrong';document.getElementById(id).style.borderColor='#dc2626'}
+  updateExProgress();
+}
+function updateExProgress(){
+  document.getElementById('ex-score-display').textContent=exCorrect+' / '+exTotal+' correctos';
+  const p=exTotal>0?Math.round(exCorrect/exTotal*100):0;
+  document.getElementById('ex-progress-bar').style.width=p+'%';
+}
+function resetExercises(){
+  exCorrect=0;exTotal=0;
+  Object.keys(exAnswered).forEach(k=>delete exAnswered[k]);
+  document.querySelectorAll('.exercise-item').forEach(el=>{el.style.borderColor='';});
+  document.querySelectorAll('.ex-feedback').forEach(el=>{el.className='ex-feedback';el.textContent=''});
+  document.querySelectorAll('.exercise-item input').forEach(el=>el.value='');
+  updateExProgress();
+}
+function switchExTab(tab,btn){
+  document.querySelectorAll('.ex-set').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ex-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('ex-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ---- GLOSARIO ----
+const glosarioData=[
+  {term:'Fracción',def:'Número que representa partes de un todo. Se escribe con un numerador (arriba) y un denominador (abajo) separados por una barra.',ex:'En El Rodadero: si divides un bollo de yuca en 4 partes y comes 1, comiste 1/4.'},
+  {term:'Numerador',def:'El número de arriba en una fracción. Indica cuántas partes iguales del todo estamos tomando o considerando.',ex:'En 3/8 de pizza del estadio, el numerador es 3: comiste 3 porciones.'},
+  {term:'Denominador',def:'El número de abajo en una fracción. Dice en cuántas partes iguales se dividió el entero.',ex:'En 3/8, el denominador es 8: la pizza se cortó en 8 porciones iguales.'},
+  {term:'Fracción Propia',def:'Fracción donde el numerador es menor que el denominador. Representa menos de un entero completo.',ex:'3/4, 2/7, 5/8. Si tienes 3/4 de boli de mango, tienes menos de uno completo.'},
+  {term:'Fracción Impropia',def:'Fracción donde el numerador es mayor o igual al denominador. Representa uno o más enteros.',ex:'7/4 equivale a 1 y 3/4. Como comprar 5/4 kg de mango: más de un kilo.'},
+  {term:'Número Mixto',def:'Combinación de un entero y una fracción propia. Otra forma de escribir una fracción impropia.',ex:'"Caminé 2 y 1/2 km hasta el Parque de Los Novios." Es lo mismo que 5/2.'},
+  {term:'Fracción Equivalente',def:'Fracciones distintas que representan la misma cantidad. Se obtienen multiplicando o dividiendo ambos términos por el mismo número.',ex:'1/2 = 2/4 = 4/8. Media pizza es lo mismo que 4 de 8 porciones.'},
+  {term:'Simplificar',def:'Reducir una fracción a su forma más sencilla dividiendo numerador y denominador entre su Máximo Común Divisor (MCD).',ex:'6/12 simplificado es 1/2. Tanto 6 como 12 se dividen entre 6.'},
+  {term:'MCM',def:'Mínimo Común Múltiplo: el número más pequeño que es múltiplo de dos o más números. Se usa para sumar y restar fracciones con diferente denominador.',ex:'MCM(4,6)=12. Para sumar 1/4 + 1/6 usamos 12 como denominador común.'},
+  {term:'Recíproco',def:'El inverso de una fracción: se intercambian numerador y denominador. Es fundamental en la división de fracciones.',ex:'El recíproco de 3/4 es 4/3. El de 2/5 es 5/2.'},
+  {term:'MCD',def:'Máximo Común Divisor: el mayor número que divide exactamente a dos o más números. Se usa para simplificar fracciones.',ex:'MCD(6,9)=3. Por eso 6/9 se simplifica a 2/3.'},
+  {term:'Barra de Fracción',def:'La línea horizontal que separa numerador y denominador. También representa la operación de división.',ex:'3/4 puede leerse como "3 dividido entre 4" = 0.75.'},
+];
+function buildGlosario(filter=''){
+  const c=document.getElementById('glosario-container');
+  const f=glosarioData.filter(g=>g.term.toLowerCase().includes(filter.toLowerCase())||g.def.toLowerCase().includes(filter.toLowerCase()));
+  c.innerHTML=f.map(g=>`
+    <div class="glosario-item">
+      <div class="glosario-term">${g.term}</div>
+      <div class="glosario-def">${g.def}</div>
+      <div class="glosario-ex">🌊 ${g.ex}</div>
+    </div>`).join('')||'<p style="color:var(--gray);padding:24px 0">No se encontraron términos. Intenta otra búsqueda.</p>';
+}
+function filterGlosario(v){buildGlosario(v)}
+buildGlosario();
+
+// ---- QUIZ ----
+const quizData=[
+  {q:'¿Qué representa el denominador de una fracción?',ctx:'Piensa en una pizza del Estadio Sierra Nevada cortada en porciones.',opts:['Cuántas partes tomamos','En cuántas partes iguales se dividió el todo','El total de pizzas','Cuánto sobró'],ans:1,exp:'El denominador (número de abajo) indica en cuántas partes iguales se dividió el todo. Si la pizza tiene 8 porciones, el denominador es 8.'},
+  {q:'¿Cuánto es 2/8 + 3/8?',ctx:'Compraste fracciones de un kg de queso en la tienda del barrio de Pescaíto.',opts:['5/16','5/8','6/8','1/2'],ans:1,exp:'Denominadores iguales: solo suma numeradores. 2+3=5. Resultado: 5/8.'},
+  {q:'¿Cuál es el MCM de 4 y 6?',ctx:'Lo necesitas para sumar 1/4 + 1/6 en el problema del mercado.',opts:['24','12','10','8'],ans:1,exp:'Múltiplos de 4: 4,8,12... Múltiplos de 6: 6,12... El primero en común es 12.'},
+  {q:'¿Cuánto es 3/4 − 1/4?',ctx:'Tenías 3/4 de boli de mango y tu hermano tomó 1/4.',opts:['2/8','2/0','2/4','4/4'],ans:2,exp:'Igual denominador: resta numeradores. 3−1=2. Resultado: 2/4 (que también es 1/2).'},
+  {q:'¿Cuánto es 2/3 × 3/4?',ctx:'Tienes 2/3 de ponqué y quieres repartir 3/4 de eso.',opts:['5/7','6/7','6/12','2/4'],ans:2,exp:'Multiplica numeradores: 2×3=6. Denominadores: 3×4=12. Resultado: 6/12 = 1/2.'},
+  {q:'¿Cuál es equivalente a 1/2?',ctx:'Una pizza del estadio cortada en 8 porciones. ¿Cuántas son la mitad?',opts:['2/6','3/6','4/8','2/3'],ans:2,exp:'4/8 = 1/2 porque 4÷4=1 y 8÷4=2. Ambas representan exactamente la mitad.'},
+  {q:'Para calcular 3/4 ÷ 2/5, ¿qué fracción se invierte?',ctx:'División en el reparto de jugos Tampico del Mercado Público.',opts:['3/4 → se invierte a 4/3','2/5 → se invierte a 5/2','Ambas se invierten','Ninguna se invierte'],ans:1,exp:'Solo se invierte el DIVISOR (la segunda fracción): 2/5 se convierte en 5/2. Luego: 3/4 × 5/2 = 15/8.'},
+  {q:'¿Cuál es la forma más simple de 6/9?',ctx:'Simplifica para encontrar la fracción más reducida.',opts:['3/9','2/3','3/4','6/9'],ans:1,exp:'MCD(6,9)=3. Dividimos: 6÷3=2, 9÷3=3. La forma más simple es 2/3.'},
+  {q:'¿Cuánto es 1/3 + 1/4?',ctx:'Sumaste fracciones de tus gastos en el bus de Santa Marta.',opts:['2/7','7/12','4/12','3/12'],ans:1,exp:'MCM(3,4)=12. Convertimos: 1/3=4/12, 1/4=3/12. Sumamos: 4/12+3/12=7/12.'},
+  {q:'Un vendedor tiene 2/3 de caja de jugos. Vende 1/2 de lo que tiene. ¿Cuánto vendió?',ctx:'Situación real en una tienda de Pescaíto, Santa Marta.',opts:['3/6','2/6','1/3','1/6'],ans:2,exp:'1/2 × 2/3 = 2/6 = 1/3. Vendió 1/3 de la caja original.'},
+];
+let quizIdx=0,quizScore=0,quizSelected=null,quizAnswered=false;
+let bestScore = parseInt(localStorage.getItem('fsm_best')||'0');
+
+function saveAndUnlock(score){
+  if(score>bestScore){bestScore=score;try{localStorage.setItem('fsm_best',score)}catch(e){}}
+  updateBestDisplay();
+  if(score>=7) unlockTema7();
+}
+function updateBestDisplay(){
+  const el=document.getElementById('best-score-display');
+  if(el) el.textContent = bestScore>0 ? bestScore+'/10' : '—';
+}
+function unlockTema7(){
+  const card=document.getElementById('tema7-card');
+  const lock=document.getElementById('tema7-lock');
+  if(card&&lock){
+    lock.style.display='none';
+    card.style.opacity='1';
+    card.style.cursor='pointer';
+    card.onclick=()=>loadAndGoLesson('combinadas');
+  }
+}
+function checkUnlock(){
+  if(bestScore<7){
+    // bounce to quiz
+    showScreen('quiz');
+    const hint=document.getElementById('quiz-score-hint');
+    if(hint){hint.style.color='#dc2626';setTimeout(()=>{hint.style.color='';},2000);}
+  }
+}
+function loadAndGoLesson(key){loadLesson(key);showScreen('lesson');}
+
+// Init on load
+updateBestDisplay();
+if(bestScore>=7) unlockTema7();
+
+function renderQuiz(){
+  const card=document.getElementById('quiz-card');
+  if(quizIdx>=quizData.length){
+    const p=Math.round(quizScore/quizData.length*100);
+    const stars=p>=80?'⭐⭐⭐':p>=60?'⭐⭐':'⭐';
+    const msg=p>=80?'¡Excelente, parcero! Eres un crack en fracciones.':p>=60?'¡Muy bien! Con un poco más de práctica llegas al tope.':'¡Sigue estudiando! Con esfuerzo lo lograrás.';
+    const unlocked = quizScore>=7;
+    saveAndUnlock(quizScore);
+    card.innerHTML=`<div class="quiz-score-card">
+      <div class="score-stars">${stars}</div>
+      <div class="score-num">${quizScore}/${quizData.length}</div>
+      <div class="score-sub">${p}% de respuestas correctas</div>
+      <p class="score-msg">${msg}</p>
+      ${unlocked?`<div style="margin:18px 0;padding:16px 20px;background:linear-gradient(135deg,#f3e8ff,#ede9fe);border:2px solid #a855f7;border-radius:14px;text-align:center"><div style="font-size:22px;margin-bottom:6px">🔓</div><div style="font-weight:700;color:#6b21a8;font-size:14px">¡Desbloqueaste Operaciones Combinadas!</div><div style="font-size:12.5px;color:#7c3aed;margin-top:4px">Ve al Temario para acceder al Tema 7</div></div>`:`<div style="margin:16px 0;padding:14px 18px;background:#fef3c7;border:1px solid #fde68a;border-radius:12px;font-size:13px;color:#92580a"><strong>Necesitas 7/10 para desbloquear Operaciones Combinadas.</strong> Tu puntaje: ${quizScore}/10. ¡Inténtalo de nuevo!</div>`}
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-gold" onclick="quizIdx=0;quizScore=0;renderQuiz()"><i class="ti ti-refresh"></i> Intentar de nuevo</button>
+        <button class="btn-ghost" style="color:var(--navy);background:var(--gray2);border-color:var(--gray3)" onclick="showScreen('ejercicios')"><i class="ti ti-pencil"></i> Más ejercicios</button>
+        ${unlocked?`<button class="btn-gold" style="background:#6b21a8" onclick="showScreen('temario')"><i class="ti ti-lock-open"></i> Ver Tema 7</button>`:''}
+      </div>
+    </div>`;
+    return;
+  }
+  const q=quizData[quizIdx];
+  quizSelected=null;quizAnswered=false;
+  const p=Math.round(quizIdx/quizData.length*100);
+  card.innerHTML=`
+    <div class="quiz-prog-text">Pregunta ${quizIdx+1} de ${quizData.length}</div>
+    <div class="quiz-prog-bar"><div class="quiz-prog-fill" style="width:${p}%"></div></div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-ctx">${q.ctx}</div>
+    <div class="quiz-opts">
+      ${q.opts.map((o,i)=>`<div class="quiz-opt" onclick="selectQuizOpt(${i})" id="qopt-${i}"><div class="qletter">${String.fromCharCode(65+i)}</div><span>${o}</span></div>`).join('')}
+    </div>
+    <div class="quiz-exp" id="q-exp">${q.exp}</div>
+    <button class="quiz-btn" id="q-btn" onclick="nextQuiz()" disabled>Confirmar respuesta</button>`;
+}
+function selectQuizOpt(i){
+  if(quizAnswered)return;
+  quizSelected=i;
+  document.querySelectorAll('.quiz-opt').forEach((el,idx)=>el.classList.toggle('selected',idx===i));
+  document.getElementById('q-btn').disabled=false;
+}
+function nextQuiz(){
+  if(quizSelected===null)return;
+  quizAnswered=true;
+  const q=quizData[quizIdx];
+  const btn=document.getElementById('q-btn');
+  document.querySelectorAll('.quiz-opt').forEach((el,i)=>{
+    if(i===q.ans)el.classList.add('correct');
+    else if(i===quizSelected&&i!==q.ans)el.classList.add('wrong');
+    el.onclick=null;
+  });
+  document.getElementById('q-exp').style.display='block';
+  if(quizSelected===q.ans)quizScore++;
+  btn.textContent=quizIdx<quizData.length-1?'Siguiente pregunta →':'Ver resultados';
+  btn.onclick=()=>{quizIdx++;renderQuiz()};
+}
+renderQuiz();
+
+// ── OPERACIONES COMBINADAS (Tema 7 — solo si desbloqueado) ──
+lessons['combinadas']={
+  emoji:'🔢', color:'linear-gradient(135deg,#4c1d95,#6b21a8)',
+  level:'Básica Secundaria', levelColor:'rgba(243,232,255,.9)', levelText:'#6b21a8',
+  title:'Operaciones Combinadas con Fracciones',
+  intro:'Cuando una expresión tiene suma, resta, multiplicación y división al mismo tiempo, necesitas seguir el orden correcto: PEMDAS.',
+  conceptoVisual:`
+    <p>Imagina que en el <strong>Mercado Público del centro histórico de Santa Marta</strong> tienes que calcular el costo de varias compras con descuentos y repartos al mismo tiempo. Para no confundirte, seguimos el orden <strong>PEMDAS</strong>:</p>
+    <div style="background:linear-gradient(135deg,#f3e8ff,#ede9fe);border:1px solid #a855f7;border-radius:14px;padding:20px;margin:16px 0;text-align:center">
+      <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:#6b21a8;margin-bottom:12px">Orden PEMDAS</div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <div style="background:white;border:1px solid #c4b5fd;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;color:#6b21a8">1. Paréntesis ( )</div>
+        <div style="background:white;border:1px solid #c4b5fd;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;color:#6b21a8">2. Exponentes</div>
+        <div style="background:white;border:1px solid #c4b5fd;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;color:#6b21a8">3. × y ÷ (izq→der)</div>
+        <div style="background:white;border:1px solid #c4b5fd;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:600;color:#6b21a8">4. + y − (izq→der)</div>
+      </div>
+    </div>
+    <div class="ctx-box"><span class="ctx-icon">🌊</span><p><strong>Regla de oro:</strong> En fracciones, multiplicación y división SIEMPRE van antes que suma y resta (a menos que haya paréntesis que cambien el orden).</p></div>`,
+  regla:[
+    {title:'Resuelve primero los paréntesis',desc:'Todo lo que está dentro de ( ) se opera primero, sin importar qué operación sea.'},
+    {title:'Multiplicaciones y divisiones',desc:'De izquierda a derecha, resuelve todos los × y ÷ antes que los + y −.'},
+    {title:'Sumas y restas',desc:'Por último, de izquierda a derecha, resuelve las sumas y restas.'},
+    {title:'Simplifica en cada paso',desc:'Reduce las fracciones parciales antes de continuar para trabajar con números más pequeños.'},
+  ],
+  ejemplos:[
+    {dif:'easy',title:'Ejemplo 1 — Multiplicación antes que suma',prob:'Calcula: 1/2 + 1/3 × 3/4',steps:['Primero la multiplicación: 1/3 × 3/4 = 3/12 = 1/4','Luego la suma: 1/2 + 1/4','MCM(2,4)=4 → 2/4 + 1/4 = 3/4','Resultado: 3/4']},
+    {dif:'med',title:'Ejemplo 2 — Con paréntesis',prob:'Calcula: (1/2 + 1/4) × 2/3',steps:['Primero el paréntesis: 1/2 + 1/4 = 2/4 + 1/4 = 3/4','Luego multiplicar: 3/4 × 2/3 = 6/12 = 1/2','Resultado: 1/2']},
+    {dif:'hard',title:'Ejemplo 3 — Expresión compleja',prob:'Calcula: 2/3 × 3/4 − 1/6 + 1/2 ÷ 2',steps:['Mult/Div: 2/3×3/4=6/12=1/2 y 1/2÷2=1/4','Expresión reducida: 1/2 − 1/6 + 1/4','MCM(2,6,4)=12 → 6/12 − 2/12 + 3/12 = 7/12','Resultado: 7/12']},
+  ],
+  desafio:'🛒 En el Mercado Público compraste 3/4 de kg de mango. Le diste 1/3 de esa cantidad a tu abuela. Con el resto hiciste 2 porciones iguales. ¿Qué fracción del kg original es cada porción?',
+  desafioSol:['Lo que diste: 1/3 × 3/4 = 3/12 = 1/4 kg','Lo que te queda: 3/4 − 1/4 = 2/4 = 1/2 kg','Cada porción: 1/2 ÷ 2 = 1/4 kg','Cada porción es 1/4 del kg original.'],
+  errorComun:'El error más común es hacer las sumas antes que las multiplicaciones. Sin paréntesis, siempre multiplica y divide PRIMERO.',
+  errorEj:'Incorrecto: 1/2 + 1/3 × 3 interpretado como (1/2+1/3)×3 ❌ — Correcto: 1/2 + (1/3×3) = 1/2 + 1 = 3/2 ✅'
+};
+</script>
+</body>
+</html>
